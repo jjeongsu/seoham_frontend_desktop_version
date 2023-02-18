@@ -142,8 +142,7 @@ function CreateTag(){
             })
           }
           placeholder="태그를 입력해 주세요"
-          // onChange={handleChange}
-          // onKeyUp={handleDropDownKey}
+          
         />
       </form>
       <ErrorMessage>{errors.tag?.message}</ErrorMessage>

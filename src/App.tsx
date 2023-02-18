@@ -69,7 +69,7 @@ a {
   color:inherit;
 }
 `;
-//test
+
 function App() {
   const isDark = useRecoilValue(isDarkAtom);
   console.log(isDark);
