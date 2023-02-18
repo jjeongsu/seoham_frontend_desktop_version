@@ -12,3 +12,7 @@
   <img src="https://img.shields.io/badge/styledcomponents-DB7093?style=for-the-badge&logo=styledcompoenents&logoColor=black"> 
   <img src="https://img.shields.io/badge/electron-47848F?style=for-the-badge&logo=electron&logoColor=black"> 
 </div>
+
+## This Branch is..
+ - Editer 페이지의 태그 기능을 담당합니다.
+ - 태그 입력시 기존의 태그목록에서 조회하여 자동완성 기능을 제공합니다.
