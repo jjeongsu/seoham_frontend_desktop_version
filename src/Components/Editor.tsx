@@ -28,6 +28,7 @@ function Editor(){
       value = {content}
       placeholder="내용을 입력해 주세요"
       onChange={onChangeContents}/>
+      {content}
   </QuilContainer>
   );
 }

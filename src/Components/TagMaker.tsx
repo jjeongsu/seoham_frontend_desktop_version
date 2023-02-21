@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
@@ -8,7 +8,7 @@ interface IForm {
   tag: string;
 }
 interface IValue {
-  value: string;
+  value: string | null;
 }
 const TagLi = styled.li`
   list-style: none;
@@ -34,7 +34,6 @@ const TagLi = styled.li`
     }
   }
 `;
-
 const TagInput = styled.input`
   width: 90%;
   height: 20px;
@@ -68,8 +67,11 @@ const DropDownItem = styled.li`
 const TAGLIST = ['birthday', 'christmas', 'hello'];
 
 function CreateTag(){
-  const {register, handleSubmit, setValue, formState: {errors}} = useForm<IForm>();
-  const [inputValue, setInputValue] = useState<IValue>();
+  const {register, handleSubmit, setValue, formState: {errors}, watch} = useForm<IForm>();
+  const [inputValue, setInputValue] = useState<string>();
+  const [isHaveInputValue, setIsHaveInputValue] = useState<boolean>(false)
+  const [dropDownList, setDropDownList] = useState(TAGLIST);
+  const [dropDownItemIndex, setDropDownItemIndex] = useState(-1);
   const [tags,setTags] = useRecoilState(tagState);
   console.log(errors);
   const handleValid = ({ tag }: IForm) => {
@@ -102,15 +104,26 @@ function CreateTag(){
       ]
     });
   }
-  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target;
-    
-    console.log(value)
-  
-  };
-  const handleDropDownKey = () => {
 
+  const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+    console.log(typeof(e.target.value));
+    setInputValue(e.target.value);
+    setIsHaveInputValue(true);
+  }
+  const handleDropDownKey = () => {
+    //input 있을때만
+    
   };
+  const showDropDownList = () => {
+    if( inputValue === ''){
+      setIsHaveInputValue(false);
+    }
+  }
+  const clickDropDownItem = (clickedItem: string ) => {
+    setInputValue(clickedItem);
+    setIsHaveInputValue(false);
+  }
+  useEffect(showDropDownList, [inputValue]);
   return (
     <TagContainer>
       <div>
@@ -125,9 +138,7 @@ function CreateTag(){
           </TagLi>
       )}
       </div>
-      
       <form onSubmit={handleSubmit(handleValid)}>
-        
         <TagInput 
           {
             ...register("tag", {
@@ -142,8 +153,33 @@ function CreateTag(){
             })
           }
           placeholder="태그를 입력해 주세요"
-          
+          onChange={handleChange}
+          value = {inputValue}
         />
+
+        { isHaveInputValue && (
+          <DropDownBox>
+            {
+              dropDownList.length === 0 && (
+                <DropDownItem> 해당하는 단어가 없습니다.</DropDownItem>
+              )
+            }
+            {
+              dropDownList.map((item, index) => {
+                return(
+                  <DropDownItem 
+                    key={dropDownItemIndex}
+                    onClick ={ () => clickDropDownItem(item)}
+                    onMouseOver = {() => setDropDownItemIndex(index)} 
+                  >
+                    {item}
+                  </DropDownItem>  
+                )
+              })
+            }
+          </DropDownBox>
+        )
+        }
       </form>
       <ErrorMessage>{errors.tag?.message}</ErrorMessage>
     </TagContainer>);
