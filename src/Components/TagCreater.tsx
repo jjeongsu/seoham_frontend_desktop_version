@@ -58,6 +58,13 @@ function TagCreater(){
       ]
     });
   }
+
+  const handleListClick =(e : React.MouseEvent<HTMLLIElement>) => {
+    const { currentTarget } = e;
+    console.log(currentTarget.outerText);
+    setInputValue(currentTarget.outerText);
+  }
+
   return(
     <>
       <div>
@@ -84,7 +91,9 @@ function TagCreater(){
         <DropDownBox>
           {
             matchedTagList?.map( (tag, index) => (
-              <DropDwonList>{tag}</DropDwonList>
+              <DropDwonList
+                onClick = {handleListClick}
+              >{tag}</DropDwonList>
             ))
           }
         </DropDownBox>
@@ -95,9 +104,20 @@ function TagCreater(){
 
 const DropDownBox = styled.ul`
   border: 2px solid black;
+  margin-top: 0px;
+  width: 215px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  border-image: linear-gradient(to right, violet 0%, #545FE8 100%);
+  border-image-slice: 1;
+  border-top: none;
+  padding-left: 15px;
 `;
 const DropDwonList = styled.li`
   list-style: none;
+  padding: 5px 0px;
+  color: #7179e6;
+  font-size: 13px;
 `;
 const TagLi = styled.li`
   list-style: none;
@@ -127,7 +147,7 @@ const TagForm = styled.form`
   border: 1px solid black;
 `
 const TagInput = styled.input`
-  width: 90%;
+  width: 200px;
   height: 20px;
   padding: 7px 15px;
   border: 1px solid #545FE8;
