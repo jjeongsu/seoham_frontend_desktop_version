@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { JSXElementConstructor, ReactElement, useEffect, useState } from "react";
+import { Controller, ControllerFieldState, ControllerRenderProps, FieldValues, useForm, UseFormStateReturn } from "react-hook-form";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { tagState } from "../atom";
@@ -68,12 +68,10 @@ const TAGLIST = ['birthday', 'christmas', 'hello'];
 
 function CreateTag(){
   const {register, handleSubmit, setValue, formState: {errors}, watch} = useForm<IForm>();
-  const [inputValue, setInputValue] = useState<string>();
-  const [isHaveInputValue, setIsHaveInputValue] = useState<boolean>(false)
-  const [dropDownList, setDropDownList] = useState(TAGLIST);
-  const [dropDownItemIndex, setDropDownItemIndex] = useState(-1);
   const [tags,setTags] = useRecoilState(tagState);
-  console.log(errors);
+  console.log("에러명",errors);
+  const [inputValue, setInputValue] = useState<string>(); //인풋값 상태 
+
   const handleValid = ({ tag }: IForm) => {
     let isDubble = false; //중복검사 확인
     tags.map( t => {
@@ -88,7 +86,7 @@ function CreateTag(){
       ...oldTags,
     ]);
     setValue("tag", "");
-    console.log(tags); //아톰에 담긴 전체 태그리스트 확인
+    console.log("만든 태그들",tags); //아톰에 담긴 전체 태그리스트 확인
   };
 
   const handleRemove = (e:React.MouseEvent<HTMLButtonElement>) => {
@@ -106,24 +104,10 @@ function CreateTag(){
   }
 
   const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
-    console.log(typeof(e.target.value));
-    setInputValue(e.target.value);
-    setIsHaveInputValue(true);
+    //setInputValue(e.target.value);
+    console.log(e.target.value);
   }
-  const handleDropDownKey = () => {
-    //input 있을때만
-    
-  };
-  const showDropDownList = () => {
-    if( inputValue === ''){
-      setIsHaveInputValue(false);
-    }
-  }
-  const clickDropDownItem = (clickedItem: string ) => {
-    setInputValue(clickedItem);
-    setIsHaveInputValue(false);
-  }
-  useEffect(showDropDownList, [inputValue]);
+
   return (
     <TagContainer>
       <div>
@@ -139,10 +123,10 @@ function CreateTag(){
       )}
       </div>
       <form onSubmit={handleSubmit(handleValid)}>
-        <TagInput 
+        {/* <TagInput 
           {
             ...register("tag", {
-              required: "태그는 하나이상 입력되어야 합니다.",
+              // required: "태그는 하나이상 입력되어야 합니다.",
               minLength: 2,
               maxLength: 10,
               validate: 
@@ -153,33 +137,8 @@ function CreateTag(){
             })
           }
           placeholder="태그를 입력해 주세요"
-          onChange={handleChange}
-          value = {inputValue}
-        />
-
-        { isHaveInputValue && (
-          <DropDownBox>
-            {
-              dropDownList.length === 0 && (
-                <DropDownItem> 해당하는 단어가 없습니다.</DropDownItem>
-              )
-            }
-            {
-              dropDownList.map((item, index) => {
-                return(
-                  <DropDownItem 
-                    key={dropDownItemIndex}
-                    onClick ={ () => clickDropDownItem(item)}
-                    onMouseOver = {() => setDropDownItemIndex(index)} 
-                  >
-                    {item}
-                  </DropDownItem>  
-                )
-              })
-            }
-          </DropDownBox>
-        )
-        }
+        /> */}
+        
       </form>
       <ErrorMessage>{errors.tag?.message}</ErrorMessage>
     </TagContainer>);
