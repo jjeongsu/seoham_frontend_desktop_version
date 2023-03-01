@@ -5,11 +5,12 @@ import styled from "styled-components";
 import { tagState } from "../atom";
 
 function TagCreater(){
-  const taglist = ['apple', 'banana', 'cinamon','alice']; //이미 만들어진 태그들
-  const [tags,setTags] = useRecoilState(tagState);
+  const taglist = ['apple', 'banana', 'cinamon','alice','princess','birthday','hello','wallet']; //이미 만들어진 태그들
+  const [tags,setTags] = useRecoilState(tagState); //atom
   const [isOpenBox, setIsOpenBox] = useState<boolean>(false); //드롭박스 펼칠지 말지
   const [inputValue, setInputValue] = useState<string>(""); //인풋필드에 들어온 값
   const [matchedTagList, setMatchedTagList] = useState<string []>(); //드롭박스로 펼쳐질 태그 리스트
+  const [tagLiIndex, setTagLiIndex] = useState<number>(-1);
   const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value; 
     console.log(newValue);
@@ -63,8 +64,23 @@ function TagCreater(){
     const { currentTarget } = e;
     console.log(currentTarget.outerText);
     setInputValue(currentTarget.outerText);
+    setIsOpenBox(false);
   }
-
+  const handleKeyDown = (e: any) => {
+    console.log(e.key);
+    if(matchedTagList !== undefined){
+      if(e.key === 'ArrowDown' && matchedTagList.length -1 > tagLiIndex){
+        setTagLiIndex(prev => prev + 1);
+      }
+      else if(e.key === 'ArrowUp' && tagLiIndex >= 0){
+        setTagLiIndex(prev => prev -1);
+      }
+      else if(e.key === 'Enter' && tagLiIndex >=0){
+        setInputValue(matchedTagList[tagLiIndex]);
+        setTagLiIndex(-1);
+      }
+    }
+  }
   return(
     <>
       <div>
@@ -85,15 +101,18 @@ function TagCreater(){
           name="tag"
           onChange = {handleChange}
           value = {inputValue}
+          onKeyDown={handleKeyDown}
         />
       </form>
       {isOpenBox && (
-        <DropDownBox>
+        <DropDownBox
+        >
           {
             matchedTagList?.map( (tag, index) => (
               <DropDwonList
-                onClick = {handleListClick}
-              >{tag}</DropDwonList>
+                key={index}
+                isFocus={index === tagLiIndex ? true : false}
+                onClick = {handleListClick}>{tag}</DropDwonList>
             ))
           }
         </DropDownBox>
@@ -113,11 +132,12 @@ const DropDownBox = styled.ul`
   border-top: none;
   padding-left: 15px;
 `;
-const DropDwonList = styled.li`
+const DropDwonList = styled.li<{isFocus?: boolean}>`
   list-style: none;
   padding: 5px 0px;
-  color: #7179e6;
+  color: ${props => props.isFocus ? '#ae37e9': '#7179e6'};
   font-size: 13px;
+  font-weight: ${props => props.isFocus ? 800: 300}
 `;
 const TagLi = styled.li`
   list-style: none;
