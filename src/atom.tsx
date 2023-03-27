@@ -20,3 +20,10 @@ export const tagState = atom<ITag []>({
   key: "tag",
   default: [],
 })
+
+//pickedDate
+export const pickedDate = atom<Date>({
+  key: "mydate",
+  default: new Date(),
+})
+

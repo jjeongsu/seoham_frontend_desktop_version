@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import { Theme } from './theme';
+import { HashRouter, RouterProvider } from 'react-router-dom';
+import Router from './Router';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

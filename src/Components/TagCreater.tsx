@@ -4,8 +4,15 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { tagState } from "../atom";
 
+const TAGCOLOR = [
+  "#C7AC98",
+  "#E7C3B1",
+  "#F7DECF",
+  "#F1DCD6",
+  "#FFEDDB",
+]
 function TagCreater(){
-  const taglist = ['apple', 'banana', 'cinamon','alice','princess','birthday','hello','wallet']; //이미 만들어진 태그들
+  const taglist = ['apple', 'banana', 'cinamon','alice','princess','birthday','hello','wallet','고마워','엄마한테온편지']; //이미 만들어진 태그들 => 이후에 수정하기
   const [tags,setTags] = useRecoilState(tagState); //atom
   const [isOpenBox, setIsOpenBox] = useState<boolean>(false); //드롭박스 펼칠지 말지
   const [inputValue, setInputValue] = useState<string>(""); //인풋필드에 들어온 값
@@ -66,7 +73,7 @@ function TagCreater(){
     setInputValue(currentTarget.outerText);
     setIsOpenBox(false);
   }
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     console.log(e.key);
     if(matchedTagList !== undefined){
       if(e.key === 'ArrowDown' && matchedTagList.length -1 > tagLiIndex){
@@ -82,10 +89,12 @@ function TagCreater(){
     }
   }
   return(
-    <>
-      <div>
+    < >
+      <div style={{display:"block", padding:"1vw" }}>
       {tags.map((t) => 
-          <TagLi>
+          <TagLi
+            color={TAGCOLOR[Math.floor(Math.random() * 5)]}
+          >
             <span>#{t.text}</span>
             <button onClick={handleRemove}>
               <svg width="15" height="15" viewBox="0 0 15 15" fill="#545FE8" xmlns="http://www.w3.org/2000/svg">
@@ -97,6 +106,7 @@ function TagCreater(){
       </div>
       <form onSubmit = {handleValid}>
         <TagInput 
+          placeholder = "태그를 입력하세요"
           type="text"
           name="tag"
           onChange = {handleChange}
@@ -127,7 +137,6 @@ const DropDownBox = styled.ul`
   width: 215px;
   border-radius: 20px;
   border: 1px solid transparent;
-  border-image: linear-gradient(to right, violet 0%, #545FE8 100%);
   border-image-slice: 1;
   border-top: none;
   padding-left: 15px;
@@ -135,19 +144,20 @@ const DropDownBox = styled.ul`
 const DropDwonList = styled.li<{isFocus?: boolean}>`
   list-style: none;
   padding: 5px 0px;
-  color: ${props => props.isFocus ? '#ae37e9': '#7179e6'};
+  color: ${props => props.isFocus ? '#F47C7C': props.theme.textColor};
   font-size: 13px;
   font-weight: ${props => props.isFocus ? 800: 300}
 `;
 const TagLi = styled.li`
   list-style: none;
   display: inline-block;
-  height: 20px;
-  background-color: #C5C9FA;
+  height: 30px;
+  background-color: ${(props) => props.color};
   padding: 7px;
   border-radius: 20px;
-  margin: 0px 3px 3px 0px;
-  color: #545FE8;
+  margin: 5px 3px 0px 0px;
+  color: #606060;
+  font-weight: 600;
   font-size: 15px;
   span {
     margin-right: 1px;
@@ -156,7 +166,6 @@ const TagLi = styled.li`
   button {
     border: none;
     background-color: transparent;
-    color: #545FE8;
     svg {
       width: 10px;
       height: 10px;
@@ -168,18 +177,16 @@ const TagForm = styled.form`
 `
 const TagInput = styled.input`
   width: 200px;
-  height: 20px;
+  height: 2.5em;
   padding: 7px 15px;
-  border: 1px solid #545FE8;
+  border: 1px solid #EF9F9F;
   border-radius: 20px;
-  border: 1px solid transparent;
-  border-image: linear-gradient(to right, violet 0%, #545FE8 100%);
-  border-image-slice: 1;
-  color: #545FE8;
+  color: ${(props) => props.theme.textColor};
   margin-top: 10px;
   &:focus {
     outline:none;
   }
+  background-color: transparent;
 `;
 
 export default TagCreater;
