@@ -1,11 +1,16 @@
-import './App.css';
-import { createGlobalStyle, ThemeProvider } from 'styled-components';
-import { DarkTheme, LightTheme } from './theme';
-import {useRecoilValue} from 'recoil';
-import { isDarkAtom } from './atom';
-import { HashRouter, Route, RouterProvider, Routes } from 'react-router-dom';
-import Router from './Router';
-import Editor from './Components/Editor';
+import "./App.css";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { DarkTheme, LightTheme } from "./theme";
+import { isDarkAtom } from "./atom";
+import CreatePage from "Components/Create";
+import FindPage from "Components/Find";
+import FindIdPage from "Components/FindId";
+import FindPwPage from "Components/FindPw";
+import LoginPage from "Components/Login";
+import LetterTest from "Pages/LetterTest";
+import { HashRouter, Route, Routes } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import Editor from "Components/Editor";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -73,24 +78,27 @@ a {
 
 function App() {
   const isDark = useRecoilValue(isDarkAtom);
-  console.log(isDark);
   return (
     <div>
       <div>
-        <ThemeProvider theme={isDark? DarkTheme:LightTheme}>
+        <ThemeProvider theme={isDark ? DarkTheme : LightTheme}>
           <GlobalStyle />
           <HashRouter>
             <Routes>
-              <Route path={'/'} element={<Editor />} />   
+              <Route path={"/"} element={<Editor />} />
+              <Route path={"/login"} element={<LoginPage />} />
+              <Route path={"/find"} element={<FindPage />}>
+                <Route path={"Id"} element={<FindIdPage />} />
+                <Route path={"Pw"} element={<FindPwPage />} />
+              </Route>
+              <Route path={"/create"} element={<CreatePage />} />
+              <Route path={"/letterTest"} element={<LetterTest />} />
             </Routes>
           </HashRouter>
         </ThemeProvider>
-      </div> 
+      </div>
     </div>
   );
 }
 
 export default App;
-
-
-
