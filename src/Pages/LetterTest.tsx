@@ -48,7 +48,7 @@ const Opacity = keyframes`
     }
 `
 const LetterPage = styled.div`
-    text-align: center;
+    // text-align: center;
     width: 50%;
     visibility: hidden;
     img{
