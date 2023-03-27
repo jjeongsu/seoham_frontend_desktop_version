@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { letterState } from "atom";
+import { letterState } from "../atom";
 
 const LetterWrap = styled.div<{ letterName: string }>`
   height: 90vh;

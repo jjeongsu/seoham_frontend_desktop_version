@@ -1,4 +1,4 @@
-import { letterState } from "atom";
+import { letterState } from "../atom";
 import axios from "axios";
 import { useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill";

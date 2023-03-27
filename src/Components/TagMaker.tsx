@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { tagState } from "atom";
+import { tagState } from "../atom";
 
 interface IForm {
   tag: string;

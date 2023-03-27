@@ -3,7 +3,7 @@ import "../styles/quillstyle.css";
 import "react-quill/dist/quill.snow.css";
 import { Quill } from "react-quill";
 import { ImageResize } from "quill-image-resize-module-ts";
-import QuillToolbar from "EditorToolBar";
+import QuillToolbar from "../EditorToolBar";
 import QuillCustom from "./ReactQuill";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";

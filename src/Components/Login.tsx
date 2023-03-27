@@ -1,4 +1,4 @@
-import { isLogAtom } from "atom";
+import { isLogAtom } from "../atom";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
