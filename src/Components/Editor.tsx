@@ -1,34 +1,71 @@
+import moment from "moment";
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-interface IContent {
-  text: string;
-}
-const QuilContainer = styled.div`
-  width: 45vw;
-  height: 650px;
-  margin-top: 30px;
+import { pickedDate, tagState } from "../atom";
+import Calender from "./Caldender";
+import TagCreater from "./TagCreater";
+import ThemeChangeBtn from "./ThemeChangeBtn";
 
-`
-
-const modules = {
-  toolbar : "yes",
-}
 
 function Editor(){
-  const [content, setContent] = useState();
-  const onChangeContents= (contents : any) =>{
-    console.log(contents);
-    setContent(contents);
-  }
-  return( 
-  <QuilContainer>
-    <ReactQuill 
-      value = {content}
-      placeholder="내용을 입력해 주세요"
-      onChange={onChangeContents}/>
-  </QuilContainer>
-  );
+  const getdate = moment(useRecoilValue(pickedDate)).format("YYYY년 MM월 DD일");
+  const gettags = useRecoilValue(tagState);
+  return (
+    <div  style={{display: "flex", flexDirection:"column", justifyContent:"center", alignItems:"center", marginTop:"10%"}}>
+      <Header> 편지 작성하기</Header>
+      <Letter>
+        <QuillContainer>
+          {/* 여기에 react-quill 컴포넌트 넣어주세요 */}
+          test
+        </QuillContainer>
+        <div style={{display: "flex", flexDirection:"column", justifyContent:"center", alignItems:"center", width:"30%"}}>
+          <div>
+            {getdate} 에 <Sender /> 님으로 부터 온 편지
+          </div>
+          <TagCreater />
+          <Calender />
+        </div>
+      </Letter>
+      <ThemeChangeBtn />
+    </div>
+    
+    
+  )
 }
 export default Editor;
+
+const Header = styled.h1`
+  display: block;
+  font-size: larger;
+  font-weight: 700;
+  color: ${(props) => props.theme.textColor};
+  text-align: center;
+  margin-bottom: 5vh;
+`
+const QuillContainer = styled.div`
+  background-color: aliceblue;
+  border: 1px solid black;
+  width: 60%;
+  height: 70%;
+`
+const Letter = styled.div`
+  width: 90vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+`;
+const Sender = styled.input`
+  display: inline-block;
+  margin-left: 5px;
+  border: none;
+  border-bottom: 0.2px solid ${(props) => props.theme.textColor};
+  background-color: transparent;
+  width: 3rem;
+  &:focus {
+    outline: none;
+  }
+  color: ${(props) => props.theme.textColor};
+`;

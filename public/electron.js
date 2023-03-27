@@ -12,6 +12,7 @@ function createWindow() {
       nodeIntegration: true,
       enableRemoteModule: true,
       devTools: isDev,
+      titleBarStyle: 'hiddenInset',
     },
   });
 
@@ -43,3 +44,4 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
