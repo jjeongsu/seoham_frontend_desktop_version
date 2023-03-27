@@ -1,145 +1,113 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { letterState } from "../atom";
+import MainMenu from './mainTest'
+import styled, {keyframes} from 'styled-components';
+import ViewLetterList from '../Components/ViewLetterList';
+import ViewTag from '../Components/ViewTag';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Letters_tag1, Letters_tag2, LetterType } from '../dummydata';
+import { LetterPaper, LetterContent, PlusBtn } from '../styles/LetterTestCss';
 
-const LetterWrap = styled.div<{ letterName: string }>`
-  height: 90vh;
-  position: relative;
-  img {
-    height: 100%;
-    vertical-align: middle;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  div {
+import { useRecoilSnapshot, useRecoilState } from "recoil";
+import { letterState } from "../atom"; // react-quill에서 넘어오는 버전으로 수정해서 다시 만들기
+import ViewLetter from '../Components/ViewLetter';
+
+
+
+const DividedPage = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+    width: 100%;
+`
+const move = keyframes`
+    from{
+        width: 100%;
+    }
+    to{
+        width: 50%;
+    }
+`
+const MenuBar = styled.div`
+    display: flex;
+    justify-direction: row;
+
+    width: 50%;
+    animation: ${move} 0.3s linear;
+`
+const Opacity = keyframes`
+    from{
+        opacity: 0;
+        width: 0%;
+        visibility: hidden;
+    }
+    to{
+        opacity: 1;
+        width: 50%;
+        visibility: visible;
+    }
+`
+const LetterPage = styled.div`
+    text-align: center;
+    width: 50%;
+    visibility: hidden;
+    img{
+        height: 80vh;
+    }
+    animation-duration: 2s;
+    animation-name: ${Opacity};
+    animation-fill-mode: forwards;
+`
+const BackBtn = styled.button`
+    display: block;
     background-color: transparent;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 30%;
-    ${(props) => {
-      const letter = props.letterName;
-      if (letter === "spring" || letter === "autumn" || letter === "winter") {
-        return `
-                    padding: 20px 10px;
-                    height: 60%
-                    `;
-      } else if (letter === "christmas") {
-        return `
-                    padding: 20px 10px;
-                    height: 50%;
-                    position: absolute;
-                    top: 40%;
-                    left: 50%;
-                    transform: translate(-50%, -60%);
-                    `;
-      } else if (letter === "birthday" || letter === "love") {
-        return `
-                    padding: 20px 10px;
-                    height: 60%;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -30%);
-                    `;
-      } else if (letter === "congratulation") {
-        return `
-                    padding: 20px 10px;
-                    height: 50%;
-                    transform: translate(-50%, -50%);
-                    `;
-      } else if (letter === "tradition" || letter === "letter1") {
-        return `
-                    padding: 20px 10px;
-                    height: 70%;
-                    `;
-      }
-    }}
-  }
-`;
+    margin-left: 32px;
+    margin-top: 15px;
+    border: 0;
+    img{
+        width: 16px;
+        height: 16px;
+        &:hover{
+            border-radius:9999px;
+            background-color: gray;
+        }
+    }
+`
 
-// ${ props => {
-//     const letter = props.letterName;
-//     if (letter == "spring"){
-//         return (
-//             `
-//             padding: 20px 10px;
-//             height: 60%
-//             `
-//         )
-//     }
-// }}
-
-// 편지지 선택 후 편지지 내부에 div 가운데 정렬 시키기까지 완료
-// 이젠 선택한 선택지 별로 마진이나 div 위치, 크기를 설정하는 작업 필요!!
-
-const LetterCss = styled.div<{ imgSrc: string }>`
-  width: 80%;
-  height: auto;
-  // background-color: #000;
-  background-image: url("${(props) => props.imgSrc}");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% auto;
-`;
-
-function LetterTest() {
-  const [Selected, setSelected] = useState("");
-  const [Letter, setLetter] = useRecoilState(letterState);
-  // const Letter = useRecoilValue(letterState);
-  const tmp_letter = Letter.split("</p>")
-    .join(",")
-    .split("</h1>")
-    .join(",")
-    .split("</h2>")
-    .join(",")
-    .split("</h3>")
-    .join(",")
-    .split("</h4>")
-    .join(",")
-    .split("</h5>")
-    .join(",")
-    .split("</h6>")
-    .join(",")
-    .split(",");
-  console.log(tmp_letter);
-  const handleSelect = (e: any) => {
-    setSelected(e.target.value);
-    console.log(typeof Selected);
-  };
-  const navigate = useNavigate();
-  const onClickBack = () => {
-    navigate("/");
-  };
-  return (
-    <div>
-      <button onClick={onClickBack}>back</button>
-      <select onChange={handleSelect} value={Selected}>
-        <option value={0}>--</option>
-        <option value={"spring"}>봄</option>
-        <option value={"autumn"}>가을</option>
-        <option value={"winter"}>겨울</option>
-        <option value={"christmas"}>크리스마스</option>
-        <option value={"birthday"}>생일</option>
-        <option value={"congratulation"}>축하</option>
-        <option value={"love"}>사랑</option>
-        <option value={"tradition"}>전통</option>
-        <option value={"letter1"}>일반</option>
-      </select>
-
-      {/* <LetterCss imgSrc={`letter/${Selected}.png`} className={`${Selected}`}>
-                test
-            </LetterCss> */}
-      <LetterWrap letterName={`${Selected}`}>
-        <img src={`img/${Selected}.png`} alt={`${Selected}`} />
-        <div>{/* {Letter} */}</div>
-        <div dangerouslySetInnerHTML={{ __html: Letter }}></div>
-      </LetterWrap>
-    </div>
-  );
+function LetterTest(){
+    const location = useLocation();
+    const navigate = useNavigate();
+    // const [tagName, setTagName] = useState(location.state.tagName) //이게 setTagId가 되는게 좋을지도? 아직 api 연결을 안해봐서 어떤게 더 나은지는 잘 모르겠어요
+    // const [tagId, setTagId] = useState(location.state.tagId) //이것도 추가하는 방향으로 나중에 수정
+    const [tag, setTag] = useState([location.state.tagName, location.state.tagId, location.state.tagColor])
+    const [Letter, setLetter] = useRecoilState(letterState)
+    const [plus, setPlus] = useState(false);
+    console.log("편지 확인 페이지에서의 리스트: ", tag)
+    console.log("letter Id:", location.state.letterId)
+    console.log("letterId 타입: ", typeof(Number(location.state.letterId)))
+    // const letterId = Number(location.state.letterId)
+    // 이건 지금 letterId가 더미데이터 상에서 중복돼서 발생하는 문제로 보임
+    // 백엔드에서는 letterId도 독립적인 상태니까 currentLetter에 넣어주는 형식으로 작성해도 괜찮을듯
+    // 그리고 api 연결하면 이런 무식한 map 방식으로 id 찾기는 안해도 되니까 더더욱 괜찮을지도???? 
+    // 이건 희망회로 돌려본다
+    const onClickBack = () => {
+        navigate("/home");
+    }
+    return(
+        <div>
+            {/* 분할 애니메이션 테스트입니다. */}
+            <DividedPage>
+                <MenuBar>
+                    <ViewTag setTag={setTag}/>
+                    <ViewLetterList tagName={tag[0]} tagId={tag[1]} tagColor={tag[2]}/>
+                </MenuBar>
+                <LetterPage>
+                    <BackBtn onClick={onClickBack}><img src='/img/left-arrow.png'/></BackBtn>
+                    <ViewLetter letterId={Number(location.state.letterId)}/>
+                </LetterPage>
+            </DividedPage>
+        </div>
+    )
 }
+
 export default LetterTest;

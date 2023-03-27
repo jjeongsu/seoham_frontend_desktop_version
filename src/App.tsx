@@ -11,6 +11,7 @@ import LetterTest from "./Pages/LetterTest";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import Editor from "./Components/Editor";
+import MainTest from "./Pages/mainTest";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -92,7 +93,8 @@ function App() {
                 <Route path={"Pw"} element={<FindPwPage />} />
               </Route>
               <Route path={"/create"} element={<CreatePage />} />
-              <Route path={"/letterTest"} element={<LetterTest />} />
+              <Route path={"/letter"} element={<LetterTest />} />
+              <Route path={"/home"} element={<MainTest/>}/>
             </Routes>
           </HashRouter>
         </ThemeProvider>

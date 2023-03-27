@@ -4,11 +4,12 @@ import { useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
 
 function QuillCustom() {
   const [value, setValue] = useState("");
   const quillRef = useRef<ReactQuill>(null);
-
+  const navigate = useNavigate()
   // 저장 버튼 -> recoil 임시 사용
   // const setLetter = useSetRecoilState(letterState);
   // const onClickSave = () => {
@@ -20,7 +21,9 @@ function QuillCustom() {
     setLetter(value);
     console.log(value);
   };
-
+  const onClickMenu = () => {
+    navigate("/home")
+  }
   //image URL로 변환하는 과정
   const ImageHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     const input = document.createElement("input");
@@ -92,6 +95,7 @@ function QuillCustom() {
         placeholder="내용을 입력하세요."
       />
       <button onClick={onClickSave}>저장</button>
+      <button onClick={onClickMenu}>페이지 전환 테스트</button>
     </>
   );
 }
