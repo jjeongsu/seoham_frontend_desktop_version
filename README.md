@@ -14,4 +14,7 @@
 </div>
 
 ## This Branch is..
- - Author : 이정수 / 제이드, 이해연, 조민규
+ - Author : 이정수
+ - react-query를 사용하여 편지, 태그에 관한 정보를 가져옵니다.
+ - 태그리스트의 불필요한 리랜더링의 방지합니다.
+ - Todo..recoil selector를 활용하여 컴포넌트에서 수행되는 연산을 줄여보자.
