@@ -26,7 +26,7 @@ const ToggleContainer =styled.div `
   position: relative;
 `;
 const ToggleBackElement = styled.div<IToggleBackEle>`
-  background-color: ${(props) => props.isDarkMode?  "rgb(233,233,234)": "rgb(0,200,102)"};
+  background-color: ${(props) => props.isDarkMode?  "rgb(233,233,234)": "#FF9494"};
   width: 50px;
   height: 24px;
   border-radius: 30px;

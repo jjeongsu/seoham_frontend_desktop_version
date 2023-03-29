@@ -3,6 +3,8 @@ import { ViewTagGrid, TagWrap, SettingWrap, MyBtn} from "../styles/MaintestCss"
 import { TagList } from "../dummydata"
 import Tag from "./Tag"
 import { useNavigate } from "react-router-dom";
+import ThemeChangeBtn from "./ThemeChangeBtn";
+import ThemeChangeToggle from "./ThemeChangeToggle";
 
 interface propsType {
     setTag:Function;
@@ -56,6 +58,7 @@ function ViewTag({setTag}:propsType){
                             <img style={{width:"20px", height:"20px"}} src="/img/settings.png"/>
                         </div>
                     </MyBtn>
+                    <ThemeChangeToggle />
                 </SettingWrap>
             </ViewTagGrid>
     )
