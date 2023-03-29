@@ -13,6 +13,7 @@ function Tag({tagName, tagId, tagColor, setTag}:propsType){
         console.log(tagName, tagId, tagColor)
         setTag([tagName, tagId, tagColor])
     }
+    
     return(
         <TagBtn onClick={onClickTag} name={tagName} color={tagColor}>
             {tagName}

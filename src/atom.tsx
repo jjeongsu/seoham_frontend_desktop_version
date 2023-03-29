@@ -1,5 +1,5 @@
-import { atom } from "recoil";
-
+import { atom, selector} from "recoil";
+import {recoilPersist} from "recoil-persist"
 //테마
 export const isDarkAtom = atom({
   key: "isDark",
@@ -32,3 +32,18 @@ export const pickedDate = atom<Date>({
   key: "mydate",
   default: new Date(),
 });
+
+//로그인토큰과 userIdx 관련
+export interface IUserInfo {
+  logintoken: string;
+  userIdx: number;
+};
+const {persistAtom} = recoilPersist({ //atom을 자동으로 로컬에 저장, 삭제해준다.
+  key:"userInfoLocal", //로컬스토리지에 저장되는 키값
+  storage: localStorage,
+})
+export const userInfoState = atom<IUserInfo>({
+  key:"userInfo",
+  default: {logintoken: "", userIdx: NaN },
+  effects_UNSTABLE: [persistAtom],
+})

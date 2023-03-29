@@ -30,8 +30,7 @@ const move = keyframes`
 `
 const MenuBar = styled.div`
     display: flex;
-    justify-direction: row;
-
+    flex-direction: row;
     width: 50%;
     animation: ${move} 0.3s linear;
 `

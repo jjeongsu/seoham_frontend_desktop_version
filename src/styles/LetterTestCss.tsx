@@ -13,31 +13,31 @@ interface propsType{
     paper:number;
 }
 export const LetterPaper = styled.img.attrs((props:propsType) => {
-    if(props.paper == 1){
+    if(props.paper === 1){
         return({src:`${Autumn}`})
     }
-    else if(props.paper == 2){
+    else if(props.paper === 2){
         return({src:`${Birthday}`})
     }
-    else if(props.paper == 3){
+    else if(props.paper === 3){
         return({src:`${Christmas}`})
     }
-    else if(props.paper == 4){
+    else if(props.paper === 4){
         return({src:`${Congratulation}`})
     }
-    else if(props.paper == 5){
+    else if(props.paper === 5){
         return({src:`${Letter1}`})
     }
-    else if(props.paper == 6){
+    else if(props.paper === 6){
         return({src:`${Love}`})
     }
-    else if(props.paper == 7){
+    else if(props.paper === 7){
         return({src:`${Spring}`})
     }
-    else if(props.paper == 8){
+    else if(props.paper === 8){
         return({src:`${Tradition}`})
     }
-    else if(props.paper == 9){
+    else if(props.paper === 9){
         return({src:`${Winter}`})
     }
 })`

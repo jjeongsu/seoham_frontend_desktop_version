@@ -2,6 +2,7 @@ import "./App.css";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { DarkTheme, LightTheme } from "./theme";
 import { isDarkAtom } from "./atom";
+import {ReactQueryDevtools} from "react-query/devtools"
 import CreatePage from "./Components/Create";
 import FindPage from "./Components/Find";
 import FindIdPage from "./Components/FindId";
@@ -97,6 +98,8 @@ function App() {
               <Route path={"/home"} element={<MainTest/>}/>
             </Routes>
           </HashRouter>
+          <ReactQueryDevtools initialIsOpen={true} />
+          {/* 일단 툴 열어두고 나중에 false로 바꾸기 */}
         </ThemeProvider>
       </div>
     </div>
