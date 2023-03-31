@@ -6,16 +6,13 @@ import { useNavigate } from "react-router-dom";
 import ThemeChangeBtn from "./ThemeChangeBtn";
 import ThemeChangeToggle from "./ThemeChangeToggle";
 import { fetchTagList } from "../api";
+import { ITag } from "../atom";
 
 interface propsType {
     setTag:Function;
     //setTagId:Funtion; 도 추가하기(api 호출에 필요할듯)
 }
-interface ITag {
-    tagName : string,
-    tagIdx : number,
-    tagColor : string,
-}
+
 function ViewTag({setTag}:propsType){
     const onClickMypage = () => {
         console.log("mypage")
@@ -41,6 +38,11 @@ function ViewTag({setTag}:propsType){
                         <Tag key={tag[1]} tagName={tag[0].toString()} tagColor={tag[2].toString()} tagId={Number(tag[1])} setTag={setTag}/>
                     ))
                     } */}
+                    {
+                        taglistData.map((tag:ITag) =>(
+                            <Tag tagName={tag.tagName} tagIdx={tag.tagIdx} tagColor={tag.tagColor}  />
+                        ))
+                    }
                 </TagWrap>
                 <SettingWrap>
                     <MyBtn onClick={onClickMypage}>

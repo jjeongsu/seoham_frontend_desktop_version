@@ -1,19 +1,18 @@
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { currentTagState, ITag } from "../atom";
 
-interface propsType {
-    tagName: string;
-    tagId: number;
-    tagColor: string;
-    setTag: Function;
-}
-
-function Tag({tagName, tagId, tagColor, setTag}:propsType){
+function Tag({tagName, tagIdx, tagColor}:ITag){
+    const setCurrentTag = useSetRecoilState(currentTagState); //현재 선택한 태그 담기
     const onClickTag = (e:any) => {
-        const tagName = e.target.name
-        console.log(tagName, tagId, tagColor)
-        setTag([tagName, tagId, tagColor])
+        const tagName = e.target.name;
+        setCurrentTag({
+            tagName: tagName,
+            tagIdx: tagIdx,
+            tagColor: tagColor,
+        });
     }
-    
+
     return(
         <TagBtn onClick={onClickTag} name={tagName} color={tagColor}>
             {tagName}

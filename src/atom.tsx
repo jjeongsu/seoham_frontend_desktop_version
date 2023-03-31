@@ -12,11 +12,11 @@ export const isLogAtom = atom({
 });
 
 //tagMaker
-export interface ITag {
+export interface INewTag {
   text: string;
   id: number;
 }
-export const tagState = atom<ITag[]>({
+export const tagState = atom<INewTag[]>({
   key: "tag",
   default: [],
 });
@@ -46,4 +46,15 @@ export const userInfoState = atom<IUserInfo>({
   key:"userInfo",
   default: {logintoken: "", userIdx: NaN },
   effects_UNSTABLE: [persistAtom],
+})
+
+export interface ITag {
+  tagName : string;
+  tagIdx: number;
+  tagColor: string;
+}
+//태그리스트에서 현재 선택한 편지
+export const currentTagState = atom<ITag>({
+  key:"currentTag",
+  default: {tagName: " ", tagIdx: 0, tagColor: ""},
 })

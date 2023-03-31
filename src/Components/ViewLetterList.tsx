@@ -54,10 +54,7 @@ function ViewLetterList({tagName, tagId, tagColor}:propsType){
         navigate("/letter", {state: {letterId, tagName, tagId, tagColor}})
     }
     console.log(Letters_tag1)
-    // Letters_tag1.map((letter) => {
-    //     console.log(letter, typeof(letter))
-    // })
-    
+
     return(
         <div style={{width:"50%"}}>
         {/* 선택된 태그 출력 파트 */}

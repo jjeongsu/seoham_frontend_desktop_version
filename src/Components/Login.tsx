@@ -79,7 +79,7 @@ function LoginPage() {
             logintoken: res.data.result.jwt,
             userIdx:res.data.result.userIdx,
           }
-        )
+        );
         //localStorage.setItem("login_token", res.data.result.jwt);
         //localStorage.setItem("userIdx", res.data.result.userIdx);
         setIsLoggedIn(true);
