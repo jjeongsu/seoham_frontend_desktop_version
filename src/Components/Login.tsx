@@ -80,8 +80,6 @@ function LoginPage() {
             userIdx:res.data.result.userIdx,
           }
         );
-        //localStorage.setItem("login_token", res.data.result.jwt);
-        //localStorage.setItem("userIdx", res.data.result.userIdx);
         setIsLoggedIn(true);
         alert("로그인 되었습니다");
         navigate("/edit");

@@ -5,15 +5,15 @@ import Tag from "./Tag"
 import { useNavigate } from "react-router-dom";
 import ThemeChangeBtn from "./ThemeChangeBtn";
 import ThemeChangeToggle from "./ThemeChangeToggle";
-import { fetchTagList } from "../api";
+import { fetchTagList }from "../api";
 import { ITag } from "../atom";
-
+import { useQuery } from "@tanstack/react-query";
 interface propsType {
     setTag:Function;
     //setTagId:Funtion; 도 추가하기(api 호출에 필요할듯)
 }
 
-function ViewTag({setTag}:propsType){
+function ViewTag(){
     const onClickMypage = () => {
         console.log("mypage")
     }
@@ -25,7 +25,7 @@ function ViewTag({setTag}:propsType){
         navigate("/")
     }
     //태그리스트불러오기
-    const {isLoading:taglistLoading, data: taglistData} = useQuery<ITag []>(["allTags"],fetchTagList); //특정 변수에 의존하는 경우 ["letters", tagIdx] 이런식으로 작성가능
+    const {isLoading:taglistLoading, data } = useQuery<ITag []>(["allTags"],fetchTagList); 
     return(
             <ViewTagGrid>
                 {/* 게시판 페이지로 돌아가기 */}
@@ -33,13 +33,12 @@ function ViewTag({setTag}:propsType){
                 {/* 태그 선택 파트 */}
                 <h1 style={{textAlign: "center", fontSize: "x-large", fontWeight:"bold"}}>서함</h1>
                 <TagWrap>
-                    {/* {
-                    TagList.map((tag) => (
-                        <Tag key={tag[1]} tagName={tag[0].toString()} tagColor={tag[2].toString()} tagId={Number(tag[1])} setTag={setTag}/>
-                    ))
-                    } */}
                     {
-                        taglistData.map((tag:ITag) =>(
+                        taglistLoading
+                        ?
+                        "isloading the tags"
+                        :
+                        data?.map((tag:ITag) =>(
                             <Tag tagName={tag.tagName} tagIdx={tag.tagIdx} tagColor={tag.tagColor}  />
                         ))
                     }
@@ -68,6 +67,3 @@ function ViewTag({setTag}:propsType){
 
 export default ViewTag
 
-function useQuery<T>(arg0: any[], arg1: () => any): { isLoading: any; data: any; } {
-    throw new Error("Function not implemented.");
-}

@@ -22,16 +22,7 @@ function ViewLetter({letterId}:propsType){
     }
     console.log(plus)
     let currentLetter:LetterType = {id:0, sender:"", date:"", content:"", paper:0}
-    Letters_tag1.map((letter) => {
-        if(letter.id == letterId){
-            currentLetter = letter
-        }
-    })
-    Letters_tag2.map((letter) => {
-        if(letter.id == letterId){
-            currentLetter = letter
-        }
-    })
+
 
     return (
         <div style={{position:"relative", width:"100%", height:"90vh"}}>

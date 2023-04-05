@@ -1,5 +1,6 @@
 import { atom, selector} from "recoil";
 import {recoilPersist} from "recoil-persist"
+import { ILetter } from "./Components/ViewLetterList";
 //테마
 export const isDarkAtom = atom({
   key: "isDark",
@@ -58,3 +59,16 @@ export const currentTagState = atom<ITag>({
   key:"currentTag",
   default: {tagName: " ", tagIdx: 0, tagColor: ""},
 })
+
+//현재 보여주는 편지목록에 담긴 편지들
+export const currentLettersState = atom<ILetter[]>({
+  key:"currentLetters",
+  default: [],
+})
+
+
+
+
+
+
+

@@ -8,7 +8,7 @@ import { Letters_tag1, Letters_tag2, LetterType } from '../dummydata';
 import { LetterPaper, LetterContent, PlusBtn } from '../styles/LetterTestCss';
 
 import { useRecoilSnapshot, useRecoilState } from "recoil";
-import { letterState } from "../atom"; // react-quill에서 넘어오는 버전으로 수정해서 다시 만들기
+import { currentTagState, letterState } from "../atom"; // react-quill에서 넘어오는 버전으로 수정해서 다시 만들기
 import ViewLetter from '../Components/ViewLetter';
 
 
@@ -76,12 +76,12 @@ const BackBtn = styled.button`
 function LetterTest(){
     const location = useLocation();
     const navigate = useNavigate();
-    // const [tagName, setTagName] = useState(location.state.tagName) //이게 setTagId가 되는게 좋을지도? 아직 api 연결을 안해봐서 어떤게 더 나은지는 잘 모르겠어요
-    // const [tagId, setTagId] = useState(location.state.tagId) //이것도 추가하는 방향으로 나중에 수정
-    const [tag, setTag] = useState([location.state.tagName, location.state.tagId, location.state.tagColor])
-    const [Letter, setLetter] = useRecoilState(letterState)
+    // 현재 선택된 태그 정보 불러오려면
+    const [currentTag, setCurrentTag] = useRecoilState(currentTagState);
+    //const [tag, setTag] = useState([location.state.tagName, location.state.tagId, location.state.tagColor])
+    const [Letter, setLetter] = useRecoilState(letterState);
     const [plus, setPlus] = useState(false);
-    console.log("편지 확인 페이지에서의 리스트: ", tag)
+    //console.log("편지 확인 페이지에서의 리스트: ", tag);
     console.log("letter Id:", location.state.letterId)
     console.log("letterId 타입: ", typeof(Number(location.state.letterId)))
     // const letterId = Number(location.state.letterId)
@@ -97,8 +97,8 @@ function LetterTest(){
             {/* 분할 애니메이션 테스트입니다. */}
             <DividedPage>
                 <MenuBar>
-                    <ViewTag setTag={setTag}/>
-                    <ViewLetterList tagName={tag[0]} tagId={tag[1]} tagColor={tag[2]}/>
+                    <ViewTag />
+                    <ViewLetterList />
                 </MenuBar>
                 <LetterPage>
                     <BackBtn onClick={onClickBack}><img src='/img/left-arrow.png'/></BackBtn>

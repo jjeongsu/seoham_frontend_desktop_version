@@ -13,8 +13,8 @@ function MainTest(){
     }, [tag])
     return(
         <MainGrid>
-            <ViewTag setTag={setTag}/>
-            <ViewLetterList tagName={tag[0]} tagId={tag[1]} tagColor={tag[2]}/>
+            <ViewTag />
+            <ViewLetterList />
         </MainGrid>
     )
 }
