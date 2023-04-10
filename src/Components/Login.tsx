@@ -1,9 +1,9 @@
-import { isLogAtom } from "../atom";
+import { isLogAtom, userInfoState } from "../atom";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   LineInfoText,
   LoginButton,
@@ -18,6 +18,7 @@ import {
 function LoginPage() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useRecoilState<boolean>(isLogAtom);
+  const setUserInfo = useSetRecoilState(userInfoState);
   const [show, setShow] = useState<boolean>(false);
   useEffect(() => {
     if (isLoggedIn === true) {
@@ -72,8 +73,13 @@ function LoginPage() {
         { headers: { "Content-Type": "application/json" } }
       );
       if (res.data.isSuccess === true) {
-        localStorage.setItem("login_token", res.data.result.jwt);
-        localStorage.setItem("userIdx", res.data.result.userIdx);
+        //atom, localstorage한번에 저장
+        setUserInfo(
+          {
+            logintoken: res.data.result.jwt,
+            userIdx:res.data.result.userIdx,
+          }
+        );
         setIsLoggedIn(true);
         alert("로그인 되었습니다");
         navigate("/edit");
