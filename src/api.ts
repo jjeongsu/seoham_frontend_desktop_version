@@ -1,6 +1,7 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { currentLettersState, currentTagState, ITag, userInfoState } from "./atom";
 import { ILetter } from "./Components/ViewLetterList";
+import { ISender } from "./Components/ViewTag";
 
 const BASE_URL = `https://seohamserver.shop`;
 const userInfo = useRecoilValue(userInfoState);
@@ -37,4 +38,19 @@ export function fetchLetterList(tagID: number){
     setLetters([...LETTERLIST]);
   });
   return [...LETTERLIST];
+}
+
+export function fetchSenderList(){
+  const SENDERLIST:ISender[] = [];
+  fetch(`${BASE_URL}/post/senders`,{
+    method: "GET",
+    headers: {
+      "X-ACCESS-TOKEN": userInfo.logintoken,
+    },
+  })
+  .then(res => res.json())
+  .then((res) => {
+    res.result.map((item: ISender) => SENDERLIST.push(item));
+  });
+  return [...SENDERLIST];
 }

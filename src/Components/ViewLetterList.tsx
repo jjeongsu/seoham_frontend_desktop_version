@@ -34,7 +34,7 @@ function ViewLetterList(){
   const tagID = currentTag.tagIdx;
   //선택된 태그에 해당하는 편지 불러오기
   const {isLoading:letterlistLoading, data: letterlistData} = useQuery<ILetter []>(["allLetters", tagID],()=>fetchLetterList(tagID));
-	const [LetterList, setLetterList ]= useRecoilState(currentLettersState);
+	const [LetterList, setLetterList ]= useRecoilState(currentLettersState); //편지 상태 
   //letterListData에 태그-편지 리스트셋이 담김.
   console.log("태그이름",currentTag.tagName, "해당하는 편지 세트", letterlistData);
   const onClickLetter = (e:any) => {
@@ -49,7 +49,11 @@ function ViewLetterList(){
 		setSorting(e.target.value);
 		if(sort === 'by_new'){
 			sortedLetterList = sortByNew([...LetterList]);
-		}else{ sortedLetterList = sortByOld([...LetterList])}
+		}else if(sort === 'by_old'){ sortedLetterList = sortByOld([...LetterList])}
+		else if(sort === 'by_sender'){
+			//보낸이별 -> 어떻게 할지,..?
+      //제일 왼쪽으로 보내자
+		}
 		setLetterList([...sortedLetterList]);
 	}
 return(
@@ -72,8 +76,9 @@ return(
         <Filter onChange ={handleSelect} value={sorting}>
           <option value='by_new'>최신순</option>
           <option value='by_old'>오래된순</option>
-          {/* <option value='by_sender'>보낸이별</option> */}
+          <option value='by_sender'>보낸이별</option>
         </Filter>
+				{sorting === "by_sender"? "보낸이별로 보여줄 편지 리스트": null}
       </div>
 
       <div style={{marginTop:"5px", width:"100%", height:"78vh", overflow:"auto", display:"flex", flexDirection:"column", alignItems:"center"}}>

@@ -34,7 +34,7 @@ export const ViewLetterListGrid = styled.div`
     padding-top: 3%;
 `
 
-export const TagWrap = styled.div`
+export const TagSenderWrap = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;

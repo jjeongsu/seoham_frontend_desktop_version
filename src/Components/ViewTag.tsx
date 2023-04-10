@@ -1,18 +1,23 @@
 import { useState } from "react"
-import { ViewTagGrid, TagWrap, SettingWrap, MyBtn} from "../styles/MaintestCss"
+import { ViewTagGrid,SettingWrap, MyBtn, TagSenderWrap} from "../styles/MaintestCss"
 import { TagList } from "../dummydata"
 import Tag from "./Tag"
 import { useNavigate } from "react-router-dom";
 import ThemeChangeBtn from "./ThemeChangeBtn";
 import ThemeChangeToggle from "./ThemeChangeToggle";
-import { fetchTagList }from "../api";
+import { fetchSenderList, fetchTagList }from "../api";
 import { ITag } from "../atom";
 import { useQuery } from "@tanstack/react-query";
+import SenderTagChangeToggle from "./SenderTagChangeToggle";
+import Sender from "./Sender";
 interface propsType {
     setTag:Function;
     //setTagId:Funtion; 도 추가하기(api 호출에 필요할듯)
 }
-
+export interface ISender {
+    senderName: string;
+    senderCount: number;
+}
 function ViewTag(){
     const onClickMypage = () => {
         console.log("mypage")
@@ -25,24 +30,40 @@ function ViewTag(){
         navigate("/")
     }
     //태그리스트불러오기
-    const {isLoading:taglistLoading, data } = useQuery<ITag []>(["allTags"],fetchTagList); 
+    const {isLoading:taglistLoading, data:tagData } = useQuery<ITag []>(["allTags"],fetchTagList);
+    //보낸이 목록 불러오기
+    const {isLoading:senderlistLoading, data: senderData} = useQuery<ISender []>(["allSenders"], fetchSenderList);
+    const [sortBy, setSortBy] = useState<boolean>(false); //태그로 정렬: 0, 보낸이로 정렬: 1 
     return(
             <ViewTagGrid>
                 {/* 게시판 페이지로 돌아가기 */}
                 <button onClick={onClick} style={{background:"transparent", border:"none", marginLeft:"20px", marginTop:"20px"}}><img src="/img/left-arrow.png" style={{width:"12px", height:"12px"}}/></button>
                 {/* 태그 선택 파트 */}
                 <h1 style={{textAlign: "center", fontSize: "x-large", fontWeight:"bold"}}>서함</h1>
-                <TagWrap>
+                <SenderTagChangeToggle sortBy={sortBy} setSortBy={setSortBy}/>
+                <TagSenderWrap>
                     {
-                        taglistLoading
+                        !sortBy
                         ?
-                        "isloading the tags"
+                            //그러면 tagLoading
+                            taglistLoading 
+                            ?
+                            "isloading the tags"
+                            :
+                            tagData?.map((tag:ITag) =>(
+                                <Tag tagName={tag.tagName} tagIdx={tag.tagIdx} tagColor={tag.tagColor}  />
+                            ))
                         :
-                        data?.map((tag:ITag) =>(
-                            <Tag tagName={tag.tagName} tagIdx={tag.tagIdx} tagColor={tag.tagColor}  />
-                        ))
+                            //그러면 senderLading
+                            senderlistLoading
+                            ?
+                            "isLoading the senders"
+                            :
+                            senderData?.map((sender:ISender) => (
+                                <Sender senderName={sender.senderName} senderCount={sender.senderCount} />
+                            ))
                     }
-                </TagWrap>
+                </TagSenderWrap>
                 <SettingWrap>
                     <MyBtn onClick={onClickMypage}>
                         <div>

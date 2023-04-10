@@ -77,7 +77,7 @@ function LetterTest(){
     const location = useLocation();
     const navigate = useNavigate();
     // 현재 선택된 태그 정보 불러오려면
-    const [currentTag, setCurrentTag] = useRecoilState(currentTagState);
+    const [currentTag, setCurrentTag] = useRecoilState(currentTagState); 
     //const [tag, setTag] = useState([location.state.tagName, location.state.tagId, location.state.tagColor])
     const [Letter, setLetter] = useRecoilState(letterState);
     const [plus, setPlus] = useState(false);
@@ -89,6 +89,7 @@ function LetterTest(){
     // 백엔드에서는 letterId도 독립적인 상태니까 currentLetter에 넣어주는 형식으로 작성해도 괜찮을듯
     // 그리고 api 연결하면 이런 무식한 map 방식으로 id 찾기는 안해도 되니까 더더욱 괜찮을지도???? 
     // 이건 희망회로 돌려본다
+    
     const onClickBack = () => {
         navigate("/home");
     }
