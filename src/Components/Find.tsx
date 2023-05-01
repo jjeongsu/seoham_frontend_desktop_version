@@ -3,7 +3,6 @@ import BackButton from "./BackButton";
 import { CreateTextH1, FindHeaderDiv, LongInputDiv } from "./loginStyled";
 
 function FindPage() {
-  const navigate = useNavigate();
   return (
     <>
       <FindHeaderDiv>

@@ -17,8 +17,8 @@ import {
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState<boolean>(isLogAtom);
   const setUserInfo = useSetRecoilState(userInfoState);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState<boolean>(isLogAtom);
   const [show, setShow] = useState<boolean>(false);
   useEffect(() => {
     if (isLoggedIn === true) {
@@ -65,7 +65,7 @@ function LoginPage() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://seohamserver.shop/user/login",
+        "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/user/login",
         {
           email: watch("email"),
           passWord: watch("password"),
@@ -73,13 +73,12 @@ function LoginPage() {
         { headers: { "Content-Type": "application/json" } }
       );
       if (res.data.isSuccess === true) {
-        //atom, localstorage한번에 저장
-        setUserInfo(
-          {
-            logintoken: res.data.result.jwt,
-            userIdx:res.data.result.userIdx,
-          }
-        );
+        setUserInfo({
+          logintoken: res.data.result.jwt,
+          userIdx: res.data.result.userIdx,
+        });
+        localStorage.setItem("login_token", res.data.result.jwt);
+        localStorage.setItem("userIdx", res.data.result.userIdx);
         setIsLoggedIn(true);
         alert("로그인 되었습니다");
         navigate("/edit");
@@ -88,6 +87,9 @@ function LoginPage() {
       }
     } catch (error) {
       alert("서버 오류가 발생했습니다.");
+      console.log(error);
+      console.log(localStorage.getItem("login_token"));
+      console.log(isLoggedIn);
     }
   };
 

@@ -12,7 +12,6 @@ function Calender() {
     <>
       <CaldendarContainer>
         <Calendar
-          onChange={onChange}
           className="react-calendar"
           value={value}
           formatDay={(locale, date) => moment(date).format("DD")}

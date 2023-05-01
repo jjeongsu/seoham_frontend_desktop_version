@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 function BackButton() {
   const navigate = useNavigate();
   const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    navigate("/");
+    navigate("/login");
   };
   return (
     <button
@@ -22,7 +22,7 @@ function BackButton() {
         src="/img/Vector 3.png"
         alt="back"
         style={{
-          width: "10px",
+          width: "16px",
           color: "black",
           border: "2px solid",
           borderColor: "transparent",

@@ -130,6 +130,21 @@ export const CreateStyledInputButton = styled.button`
   color: #ef9f9f;
 `;
 
+export const CreateStyledInputButtonWhite = styled.button`
+  width: 75px;
+  height: 25px;
+  background-color: transparent;
+  border-radius: 20px;
+  border: 0.5px solid;
+  border-color: #ef9f9f;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 12px;
+  text-align: center;
+  color: #ef9f9f;
+  background-color: white;
+`;
+
 export const PWfindStyledInputButton = styled.button`
   width: 75px;
   height: 25px;

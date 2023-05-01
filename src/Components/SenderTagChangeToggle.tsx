@@ -4,13 +4,13 @@ interface IToggleState {
   setSortBy: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function SenderTagChangeToggle({sortBy,setSortBy}: IToggleState){
+function SenderTagChangeToggle({ sortBy, setSortBy }: IToggleState) {
   const handleTagToggleClick = () => {
     setSortBy(false); //태그 선택시 0값이 들어감
-  }
+  };
   const handleSenderToggleClick = () => {
     setSortBy(true); // 보낸이별 선택시 1값이 들어감
-  }
+  };
   return (
     <>
       <ToggleContainer>
@@ -32,7 +32,7 @@ function SenderTagChangeToggle({sortBy,setSortBy}: IToggleState){
         <ToggleCircle isChosen={!sortBy} isTag={false}></ToggleCircle>
       </ToggleContainer>
     </>
-  )
+  );
 }
 export default SenderTagChangeToggle;
 
@@ -64,7 +64,7 @@ const ToggleCircle = styled.div<IToggleElem>`
   background-color: ${(props) => (props.isChosen ? "#FF9494" : "#c0cf7e")};
   position: absolute;
   width: 80px;
-  width:  ${(props) => (props.isChosen ? "75px" : "80px")};
+  width: ${(props) => (props.isChosen ? "75px" : "80px")};
   height: 29px;
   border-radius: 30px;
   top: 2px;
