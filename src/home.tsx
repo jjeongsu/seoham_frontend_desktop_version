@@ -2,10 +2,10 @@ import "./styles/quillstyle.css";
 import "react-quill/dist/quill.snow.css";
 import { Quill } from "react-quill";
 import { ImageResize } from "quill-image-resize-module-ts";
-import QuillToolbar from "EditorToolBar";
+import QuillToolbar from "./EditorToolBar";
 import { Link } from "react-router-dom";
 import TagCreater from "./Components/TagCreater";
-import QuillCustom from "Components/ReactQuill";
+import QuillCustom from "./Components/ReactQuill";
 
 Quill.register("modules/ImageResize", ImageResize);
 

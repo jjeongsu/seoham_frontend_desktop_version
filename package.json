@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.321.1",
     "@tanstack/react-query": "^4.28.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -20,6 +21,7 @@
     "react-component-export-image": "^1.0.6",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.1",
+    "react-modal": "^3.16.1",
     "react-query": "^3.39.3",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.8.1",
@@ -61,6 +63,7 @@
   },
   "devDependencies": {
     "@types/react-calendar": "^3.9.0",
+    "@types/react-modal": "^3.16.0",
     "@types/react-query": "^1.2.9",
     "@types/styled-components": "^5.1.26",
     "concurrently": "^7.6.0",

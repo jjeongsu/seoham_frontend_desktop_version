@@ -10,8 +10,8 @@ import {
   ModalMargin,
   ModalStyledInput,
   MyPageModal,
-} from "styles/Modal";
-import { FlexDiv } from "styles/MypageStyled";
+} from "../styles/Modal";
+import { FlexDiv } from "../styles/MypageStyled";
 
 type Props = {
   modalClose: () => void;

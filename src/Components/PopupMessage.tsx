@@ -2,7 +2,7 @@ import Modal from "react-modal";
 import { useRecoilState } from "recoil";
 import { popUpModal } from "../atom";
 import ReactModal from "react-modal";
-import { ModalButton, ResponseMessage } from "styles/Modal";
+import { ModalButton, ResponseMessage } from "../styles/Modal";
 import { useNavigate } from "react-router-dom";
 
 const customModalStyles: ReactModal.Styles = {
