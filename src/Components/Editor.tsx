@@ -29,11 +29,26 @@ Quill.register(Font, true);
 
 function Editor() {
   const [sender, setSender] =useState<string>("")
-  const getdate = moment(useRecoilValue(pickedDate)).format("YYYY년 MM월 DD일");
+  const getdate = String(moment(useRecoilValue(pickedDate)).format("YYYY년 MM월 DD일"));
   const gettags = useRecoilValue(tagState);
   const handleSenderChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
     setSender(e.target.value);
   }
+  const [isSaveClick, setIsSaveClick] = useState<boolean>(false);
+  const register = (e : React.MouseEvent<HTMLButtonElement>) => {
+    setIsSaveClick(prev => !prev); //버튼색 바꾸고
+    //서버에 보낼 객체 만들기 -> 만드는 중..
+    const newPost = {
+      date : getdate,
+      sender : sender, 
+    }
+
+  }
+  //getdate.slice(0,4)
+  console.log("getdate",getdate.trim());
+  console.log(getdate.slice(0,4));
+  console.log("getdate",getdate);
+  console.log(getdate.slice(8,3));
   return (
     <div
       style={{
@@ -44,7 +59,16 @@ function Editor() {
         marginTop: "10%",
       }}
     >
-      <Header> 편지 작성하기</Header>
+      <Header> 편지 작성하기
+        <SaveBtn onClick = {register}>
+          <BtnImg
+            src={isSaveClick?
+            "../savebtn_on.png"
+            :
+            "../savebtn_off.png"
+            } />
+        </SaveBtn>
+      </Header>
       <Letter>
         <QuillContainer>
           <QuillToolbar />
@@ -81,6 +105,16 @@ const Header = styled.h1`
   text-align: center;
   margin-bottom: 5vh;
 `;
+const SaveBtn = styled.button`
+  border: none;
+  width: 15px;
+  height: 15px;
+  background-color: transparent;
+`;
+const BtnImg = styled.img`
+  width: 18px;
+  height: 18px;
+`
 const QuillContainer = styled.div`
   background-color: aliceblue;
   border: 1px solid black;

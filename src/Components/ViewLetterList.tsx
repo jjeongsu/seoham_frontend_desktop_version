@@ -9,10 +9,10 @@ import { Letters_tag1, Letters_tag2, LetterType } from "../dummydata";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import styled from "styled-components";
-import { currentLettersState, currentTagState, ITag } from "../atom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { currentLettersState, currentTagState, ITag, userInfoState } from "../atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { FetchLetterList } from "../api";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "react-query";
 import { useState } from "react";
 import { sortByNew, sortByOld } from "../sort";
 import { on } from "events";
@@ -31,7 +31,7 @@ export interface ILetter {
   date: string;
   letterIdx: number;
 }
-
+const BASE_URL = `https://seohamserver.shop`;
 function ViewLetterList() {
   const [sorting, setSorting] = useState("");
   const navigate = useNavigate();
@@ -70,6 +70,24 @@ function ViewLetterList() {
     }
     setLetterList([...sortedLetterList]);
   };
+  function FetchLetterList(tagID: number) {
+    const userInfo = useRecoilValue(userInfoState);
+    const LETTERLIST: ILetter[] = [];
+    const setLetters = useSetRecoilState(currentLettersState);
+    //tagID에 해당하는 편지 불러오기
+    fetch(`${BASE_URL}/posts/tags/${tagID}`, {
+      method: "GET",
+      headers: {
+        "X-ACCESS-TOKEN": userInfo.logintoken,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        res.result.map((item: ILetter) => LETTERLIST.push(item));
+        setLetters([...LETTERLIST]);
+      });
+    return [...LETTERLIST];
+  }
   return (
     <div style={{ width: "50%" }}>
       {/* 선택된 태그 출력 파트 */}

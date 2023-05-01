@@ -9,10 +9,12 @@ import Tag from "./Tag";
 import { useNavigate } from "react-router-dom";
 import ThemeChangeToggle from "./ThemeChangeToggle";
 import { FetchSenderList, FetchTagList } from "../api";
-import { ITag } from "../atom";
-import { useQuery } from "@tanstack/react-query";
+import { ITag, userInfoState } from "../atom";
+//import { useQuery } from "@tanstack/react-query";
 import SenderTagChangeToggle from "./SenderTagChangeToggle";
 import Sender from "./Sender";
+import { useQuery } from "react-query";
+import { useRecoilValue } from "recoil";
 interface propsType {
   setTag: Function;
   //setTagId:Funtion; 도 추가하기(api 호출에 필요할듯)
@@ -21,6 +23,7 @@ export interface ISender {
   senderName: string;
   senderCount: number;
 }
+const BASE_URL = `https://seohamserver.shop`;
 function ViewTag() {
   const onClickMypage = () => {
     console.log("mypage");
@@ -42,6 +45,37 @@ function ViewTag() {
     ISender[]
   >(["allSenders"], FetchSenderList);
   const [sortBy, setSortBy] = useState<boolean>(false); //태그로 정렬: 0, 보낸이로 정렬: 1
+  
+  function FetchTagList() {
+    const userInfo = useRecoilValue(userInfoState);
+    const TAGLIST: ITag[] = [];
+    fetch(`${BASE_URL}/posts/tags?userIdx=${userInfo.userIdx}`, {
+      method: "GET",
+      headers: {
+        "X-ACCESS-TOKEN": userInfo.logintoken,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        res.result.map((item: ITag) => TAGLIST.push(item));
+      });
+    return [...TAGLIST]; //꼭 스프레드 연산자를 써야하나,,?
+  }
+  function FetchSenderList() {
+    const userInfo = useRecoilValue(userInfoState);
+    const SENDERLIST: ISender[] = [];
+    fetch(`${BASE_URL}/post/senders`, {
+      method: "GET",
+      headers: {
+        "X-ACCESS-TOKEN": userInfo.logintoken,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        res.result.map((item: ISender) => SENDERLIST.push(item));
+      });
+    return [...SENDERLIST];
+  }
   return (
     <ViewTagGrid>
       {/* 게시판 페이지로 돌아가기 */}
