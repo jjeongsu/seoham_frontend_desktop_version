@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import BackButton from "./BackButton";
 import {
   CreateStyledInput,
@@ -15,6 +14,9 @@ import {
   LoginInputDiv,
   LongInputDiv,
 } from "./loginStyled";
+import { useRecoilState } from "recoil";
+import { popUpMessage, popUpModal } from "../atom";
+import PopupMessage from "./PopupMessage";
 
 interface UserValue {
   email: string;
@@ -27,8 +29,9 @@ interface UserValue {
 }
 
 function CreatePage() {
-  const navigate = useNavigate();
   const [admireNumber, setAdmireNumber] = useState("");
+  const [modalOpen, setModalOpen] = useRecoilState(popUpModal);
+  const [message, setMessage] = useRecoilState(popUpMessage);
   const [show, setShow] = useState<boolean>(false);
   const [confirmShow, setConfirmShow] = useState<boolean>(false);
   const handleInputAdmire = (e: any) => {
@@ -47,7 +50,7 @@ function CreatePage() {
     e.preventDefault();
     try {
       const res = await axios.get(
-        `https://seohamserver.shop/user/check-join-nickname/?nickName=${watch(
+        `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/user/check-join-nickname/?nickName=${watch(
           "nickname"
         )}`,
         {
@@ -71,7 +74,7 @@ function CreatePage() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://seohamserver.shop/mail/send",
+        "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/mail/send",
         {
           email: watch("email"),
         },
@@ -93,7 +96,7 @@ function CreatePage() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://seohamserver.shop/mail/check",
+        "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/mail/check",
         {
           authCode: admireNumber,
           email: watch("email"),
@@ -115,27 +118,33 @@ function CreatePage() {
   const clickSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (
-      watch("emailCheck") === false ||
+      // watch("emailCheck") === false ||
       watch("idCheck") === false ||
-      watch("numberCheck") === false ||
+      // watch("numberCheck") === false ||
       watch("password") !== watch("passwordConfirm")
     ) {
-      alert("유효성 검사 및 비밀번호중복확인을 완료해주세요");
+      setModalOpen(!modalOpen);
+      setMessage("유효성 검사 및 비밀번호 설정을 완료해주세요");
     } else {
       try {
-        const res = await axios.post("https://seohamserver.shop/user/join", {
-          email: watch("email"),
-          passWord: watch("password"),
-          nickName: watch("nickname"),
-        });
+        const res = await axios.post(
+          "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/user/join",
+          {
+            email: watch("email"),
+            passWord: watch("password"),
+            nickName: watch("nickname"),
+          }
+        );
         if (res.status === 200) {
-          alert("가입이 완료되었습니다");
-          navigate("/");
+          setModalOpen(!modalOpen);
+          setMessage("가입이 완료되었습니다");
         } else {
-          alert("조금 있다가 시도해주세요");
+          setModalOpen(!modalOpen);
+          setMessage("조금 있다가 다시 시도해주세요");
         }
       } catch (error) {
-        alert("서버 오류가 발생했습니다.");
+        setModalOpen(!modalOpen);
+        setMessage("서버 오류가 발생했습니다");
       }
     }
   };
@@ -338,6 +347,7 @@ function CreatePage() {
         <LoginButton type="submit" disabled={!isValid} onClick={clickSignUp}>
           확인
         </LoginButton>
+        <PopupMessage message={message} />
       </LongInputDiv>
     </>
   );

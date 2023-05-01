@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 function QuillCustom() {
   const [value, setValue] = useState("");
   const quillRef = useRef<ReactQuill>(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // 저장 버튼 -> recoil 임시 사용
   // const setLetter = useSetRecoilState(letterState);
   // const onClickSave = () => {
@@ -22,8 +22,8 @@ function QuillCustom() {
     console.log(value);
   };
   const onClickMenu = () => {
-    navigate("/home")
-  }
+    navigate("/home");
+  };
   //image URL로 변환하는 과정
   const ImageHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     const input = document.createElement("input");

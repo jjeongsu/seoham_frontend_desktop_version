@@ -1,5 +1,5 @@
-import { atom, selector} from "recoil";
-import {recoilPersist} from "recoil-persist"
+import { atom, selector } from "recoil";
+import { recoilPersist } from "recoil-persist";
 import { ILetter } from "./Components/ViewLetterList";
 //테마
 export const isDarkAtom = atom({
@@ -34,41 +34,71 @@ export const pickedDate = atom<Date>({
   default: new Date(),
 });
 
-//로그인토큰과 userIdx 관련
-export interface IUserInfo {
-  logintoken: string;
-  userIdx: number;
-};
-const {persistAtom} = recoilPersist({ //atom을 자동으로 로컬에 저장, 삭제해준다.
-  key:"userInfoLocal", //로컬스토리지에 저장되는 키값
-  storage: localStorage,
-})
-export const userInfoState = atom<IUserInfo>({
-  key:"userInfo",
-  default: {logintoken: "", userIdx: NaN },
-  effects_UNSTABLE: [persistAtom],
-})
-
 export interface ITag {
-  tagName : string;
+  tagName: string;
   tagIdx: number;
   tagColor: string;
 }
 //태그리스트에서 현재 선택한 편지
 export const currentTagState = atom<ITag>({
-  key:"currentTag",
-  default: {tagName: " ", tagIdx: 0, tagColor: ""},
-})
+  key: "currentTag",
+  default: { tagName: " ", tagIdx: 0, tagColor: "" },
+});
 
 //현재 보여주는 편지목록에 담긴 편지들
 export const currentLettersState = atom<ILetter[]>({
-  key:"currentLetters",
+  key: "currentLetters",
   default: [],
-})
+});
 
+//마이페이지 관련(닉네임과 비밀번호 변경 모달버튼)
+export const mypageModal = atom({
+  key: "mypageModal",
+  default: false,
+});
 
+export const mypagePwModal = atom({
+  key: "mypagePwModal",
+  default: false,
+});
 
+//alert대신 custom modal창 관련 state
+export const popUpModal = atom({
+  key: "popUpModal",
+  default: false,
+});
 
+export const popUpMessage = atom({
+  key: "popUpModal",
+  default: "",
+});
 
+export interface IUserInfo {
+  logintoken: string;
+  userIdx: number;
+}
+const { persistAtom } = recoilPersist({
+  //atom을 자동으로 로컬에 저장, 삭제해준다.
+  key: "userInfoLocal", //로컬스토리지에 저장되는 키값
+  storage: localStorage,
+});
+export const userInfoState = atom<IUserInfo>({
+  key: "userInfo",
+  default: { logintoken: "", userIdx: NaN },
+  effects_UNSTABLE: [persistAtom],
+});
 
-
+//mypage 유저 정보가져오기
+export interface UserInfo {
+  name: string;
+  email: string;
+  letterNum: number;
+}
+export const Infostate = atom<UserInfo>({
+  key: "UserInfo",
+  default: {
+    name: "",
+    email: "",
+    letterNum: 0,
+  },
+});

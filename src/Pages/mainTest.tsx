@@ -6,17 +6,17 @@ import { useEffect, useState } from "react";
 import { MainGrid } from "../styles/MaintestCss";
 import { TagList } from "../dummydata";
 
-function MainTest(){
-    const [tag, setTag] = useState([])
-    useEffect(()=>{
-        console.log("tag변함", tag)
-    }, [tag])
-    return(
-        <MainGrid>
-            <ViewTag />
-            <ViewLetterList />
-        </MainGrid>
-    )
+function MainTest() {
+  const [tag, setTag] = useState([]);
+  useEffect(() => {
+    console.log("tag변함", tag);
+  }, [tag]);
+  return (
+    <MainGrid>
+      <ViewTag />
+      <ViewLetterList />
+    </MainGrid>
+  );
 }
 
 export default MainTest;

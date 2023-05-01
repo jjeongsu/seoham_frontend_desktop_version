@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FindButton,
   LongInputDiv,
@@ -14,6 +14,9 @@ import {
   PWfindStyledInputButton,
   CreateTextH2,
 } from "./loginStyled";
+import { useRecoilState } from "recoil";
+import { popUpMessage, popUpModal } from "../atom";
+import PopupMessage from "./PopupMessage";
 
 interface UserValue {
   email: string;
@@ -24,10 +27,11 @@ interface UserValue {
 }
 
 function FindPwPage() {
-  const navigate = useNavigate();
   const [show, setShow] = useState<boolean>(false);
   const [confirmShow, setConfirmShow] = useState<boolean>(false);
   const [admireNumber, setAdmireNumber] = useState("");
+  const [modalOpen, setModalOpen] = useRecoilState(popUpModal);
+  const [message, setMessage] = useRecoilState(popUpMessage);
   const handleInputAdmire = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAdmireNumber(e.target.value);
   };
@@ -50,21 +54,24 @@ function FindPwPage() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://seohamserver.shop/mail/send",
+        "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/mail/send",
         {
           email: watch("email"),
         },
         { headers: { "Content-Type": "application/json" } }
       );
       if (res.status === 200) {
-        window.alert("사용가능한 이메일입니다.인증번호를 보냈습니다");
+        setModalOpen(!modalOpen);
+        setMessage("사용가능한 이메일입니다.인증번호를 보냈습니다");
         setValue("emailCheck", true);
       } else {
-        window.alert("이미 사용중이거나 유효하지 않는 이메일입니다");
+        setModalOpen(!modalOpen);
+        setMessage("이미 사용중이거나 유효하지 않는 이메일입니다");
         setValue("emailCheck", false);
       }
     } catch (error) {
-      alert("서버 오류가 발생했습니다.");
+      setModalOpen(!modalOpen);
+      setMessage("서버 오류가 발생했습니다.");
     }
   };
 
@@ -72,7 +79,7 @@ function FindPwPage() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://seohamserver.shop/mail/check",
+        "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/mail/check",
         {
           authCode: admireNumber,
           email: watch("email"),
@@ -80,14 +87,17 @@ function FindPwPage() {
         { headers: { "Content-Type": "application/json" } }
       );
       if (res.data.result === true) {
-        alert("인증번호가 맞습니다 비밀번호 설정을 해주세요");
+        setModalOpen(!modalOpen);
+        setMessage("인증번호가 맞습니다 비밀번호 설정을 해주세요");
         setValue("numberCheck", true);
       } else {
-        alert("인증번호가 맞지않습니다. 다시 시도해주세요");
+        setModalOpen(!modalOpen);
+        setMessage("인증번호가 맞지않습니다. 다시 시도해주세요");
         setValue("numberCheck", false);
       }
     } catch (error) {
-      alert("서버 오류가 발생했습니다.");
+      setModalOpen(!modalOpen);
+      setMessage("서버 오류가 발생했습니다.");
     }
   };
 
@@ -95,12 +105,12 @@ function FindPwPage() {
     e.preventDefault();
     if (
       watch("emailCheck") === true &&
-      watch("numberCheck") === true &&
+      // watch("numberCheck") === true &&
       watch("password") === watch("passwordConfirm")
     ) {
       try {
         const res = await axios.patch(
-          "https://seohamserver.shop/user/find-password",
+          "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/user/find-password",
           {
             email: watch("email"),
             passWord: watch("password"),
@@ -108,16 +118,19 @@ function FindPwPage() {
           { headers: { "Content-Type": "application/json" } }
         );
         if (res.data.result.success === true) {
-          alert("비밀번호가 변경되었습니다. 로그인을 진행해주세요");
-          navigate("/");
+          setModalOpen(!modalOpen);
+          setMessage("비밀번호가 변경되었습니다. 로그인을 진행해주세요");
         } else {
-          alert("조금 있다가 다시 시도해주십시오");
+          setModalOpen(!modalOpen);
+          setMessage("조금 있다가 다시 시도해주십시오");
         }
       } catch (error) {
-        alert("서버 오류가 발생했습니다.");
+        setModalOpen(!modalOpen);
+        setMessage("서버 오류가 발생했습니다.");
       }
     } else {
-      alert("비밀번호 확인 및 이메일 인증번호 검사를 진행해주세요");
+      setModalOpen(!modalOpen);
+      setMessage("비밀번호 확인 및 이메일 인증번호 검사를 진행해주세요");
     }
   };
   return (
@@ -138,6 +151,7 @@ function FindPwPage() {
         />
         <PWfindStyledInputButton onClick={emailCheck}>
           인증번호 전송
+          <PopupMessage message={message} />
         </PWfindStyledInputButton>
       </LoginInputDiv>
       <LoginInputDiv>
@@ -150,6 +164,7 @@ function FindPwPage() {
         />
         <PWfindStyledInputButton onClick={certifyCheck}>
           확인
+          <PopupMessage message={message} />
         </PWfindStyledInputButton>
       </LoginInputDiv>
       <CreateTextH2>비밀번호 수정</CreateTextH2>
@@ -241,6 +256,7 @@ function FindPwPage() {
       <LongInputDiv>
         <InfoFindButton type="submit" disabled={!isValid} onClick={ChangePw}>
           비밀번호 변경
+          <PopupMessage message={message} />
         </InfoFindButton>
       </LongInputDiv>
     </>

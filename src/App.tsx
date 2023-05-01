@@ -1,8 +1,7 @@
-import "./App.css";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { DarkTheme, LightTheme } from "./theme";
 import { isDarkAtom } from "./atom";
-import {ReactQueryDevtools} from "react-query/devtools"
+import { ReactQueryDevtools } from "react-query/devtools";
 import CreatePage from "./Components/Create";
 import FindPage from "./Components/Find";
 import FindIdPage from "./Components/FindId";
@@ -13,6 +12,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import Editor from "./Components/Editor";
 import MainTest from "./Pages/mainTest";
+import Mypage from "./Pages/Mypage";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -87,15 +87,17 @@ function App() {
           <GlobalStyle />
           <HashRouter>
             <Routes>
-              <Route path={"/"} element={<Editor />} />
+              <Route path={"/"} element={<LoginPage />} />
               <Route path={"/login"} element={<LoginPage />} />
+              <Route path={"/edit"} element={<Editor />} />
               <Route path={"/find"} element={<FindPage />}>
                 <Route path={"Id"} element={<FindIdPage />} />
                 <Route path={"Pw"} element={<FindPwPage />} />
               </Route>
               <Route path={"/create"} element={<CreatePage />} />
               <Route path={"/letter"} element={<LetterTest />} />
-              <Route path={"/home"} element={<MainTest/>}/>
+              <Route path={"/home"} element={<MainTest />} />
+              <Route path={"/mypage"} element={<Mypage />} />
             </Routes>
           </HashRouter>
           <ReactQueryDevtools initialIsOpen={true} />
