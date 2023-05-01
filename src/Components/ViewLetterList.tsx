@@ -31,10 +31,12 @@ export interface ILetter {
   date: string;
   letterIdx: number;
 }
-const BASE_URL = `https://seohamserver.shop`;
+const BASE_URL = `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080`;
 function ViewLetterList() {
   const [sorting, setSorting] = useState("");
   const navigate = useNavigate();
+  const userInfo = useRecoilValue(userInfoState);
+  const setLetters = useSetRecoilState(currentLettersState);
   //선택된 태그 불러오기
   const currentTag = useRecoilValue<ITag>(currentTagState);
   const tagID = currentTag.tagIdx;
@@ -71,14 +73,14 @@ function ViewLetterList() {
     setLetterList([...sortedLetterList]);
   };
   function FetchLetterList(tagID: number) {
-    const userInfo = useRecoilValue(userInfoState);
     const LETTERLIST: ILetter[] = [];
-    const setLetters = useSetRecoilState(currentLettersState);
+    
     //tagID에 해당하는 편지 불러오기
     fetch(`${BASE_URL}/posts/tags/${tagID}`, {
       method: "GET",
       headers: {
-        "X-ACCESS-TOKEN": userInfo.logintoken,
+        "X-ACCESS-TOKEN": "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWR4IjoxLCJpYXQiOjE2ODI2NDIyMTcsImV4cCI6MTY4NDExMzQ0Nn0.o-ObkWeWrDv2hnxTTmRyLI3fWJpnl5gg2hIhUfSLDEw",
+        //"X-ACCESS-TOKEN": userInfo.logintoken,
       },
     })
       .then((res) => res.json())

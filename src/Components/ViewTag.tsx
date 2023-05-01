@@ -23,7 +23,7 @@ export interface ISender {
   senderName: string;
   senderCount: number;
 }
-const BASE_URL = `https://seohamserver.shop`;
+const BASE_URL =  `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080`;
 function ViewTag() {
   const onClickMypage = () => {
     console.log("mypage");
@@ -45,14 +45,14 @@ function ViewTag() {
     ISender[]
   >(["allSenders"], FetchSenderList);
   const [sortBy, setSortBy] = useState<boolean>(false); //태그로 정렬: 0, 보낸이로 정렬: 1
-  
+  const userInfo = useRecoilValue(userInfoState);
   function FetchTagList() {
-    const userInfo = useRecoilValue(userInfoState);
     const TAGLIST: ITag[] = [];
     fetch(`${BASE_URL}/posts/tags?userIdx=${userInfo.userIdx}`, {
       method: "GET",
       headers: {
-        "X-ACCESS-TOKEN": userInfo.logintoken,
+        "X-ACCESS-TOKEN": "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWR4IjoxLCJpYXQiOjE2ODI2NDIyMTcsImV4cCI6MTY4NDExMzQ0Nn0.o-ObkWeWrDv2hnxTTmRyLI3fWJpnl5gg2hIhUfSLDEw",
+        //"X-ACCESS-TOKEN": userInfo.logintoken,
       },
     })
       .then((res) => res.json())
@@ -62,12 +62,12 @@ function ViewTag() {
     return [...TAGLIST]; //꼭 스프레드 연산자를 써야하나,,?
   }
   function FetchSenderList() {
-    const userInfo = useRecoilValue(userInfoState);
     const SENDERLIST: ISender[] = [];
-    fetch(`${BASE_URL}/post/senders`, {
+    fetch(`${BASE_URL}/posts/senders`, {
       method: "GET",
       headers: {
-        "X-ACCESS-TOKEN": userInfo.logintoken,
+        "X-ACCESS-TOKEN": "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWR4IjoxLCJpYXQiOjE2ODI2NDIyMTcsImV4cCI6MTY4NDExMzQ0Nn0.o-ObkWeWrDv2hnxTTmRyLI3fWJpnl5gg2hIhUfSLDEw",
+        //"X-ACCESS-TOKEN": userInfo.logintoken,
       },
     })
       .then((res) => res.json())
