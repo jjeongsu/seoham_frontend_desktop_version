@@ -98,15 +98,20 @@ export const Infostate = atom<UserInfo>({
 });
 
 //sender
-export const currentSenderState = atom({
+export interface ISender {
+  sender: string,
+  count: number,
+}
+
+export const currentSenderState = atom<ISender>({
   key: "currentSender",
   default: {sender: " ", count: 0},
 })
 
 //toggle
-export const sortBy = atom({
+export const sortByState = atom({
   key: "sort",
-  default: {sortBy: "tag"}, //태그 "tag", 보낸이 "sender"
+  default: false //태그 "false", 보낸이 "true"
 })
 
 //편지 내용 임시 저장(실제로는 안쓸거임!!)

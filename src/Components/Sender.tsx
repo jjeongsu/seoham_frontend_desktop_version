@@ -58,8 +58,11 @@ const SenderBtn = styled.button`
     }
     img{
         margin: 0px 20px;
-        width: 70px;
-        height: 70px;
+        width: 20%;
+        max-width: 70px;
+        height: 20%;
+        max-height: 70px;
+        align-self: center;
     }
     p{
         background: transparent;

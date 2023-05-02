@@ -26,8 +26,8 @@ const TagBtn = styled.div`
 function ViewLetter({ letterId }: propsType) {
   console.log("얍", typeof letterId, letterId);
   const [plus, setPlus] = useState(false);
-  const [Letter, setLetter] = useRecoilState(letterState);
-  const [currentLetter, setCurrentLetter] = useRecoilState(currentViewLetter);
+  const [Letter, setLetter] = useRecoilState(letterState); //react-quill에서 바로 받아오는 편지 내용입니다.
+  const [currentLetter, setCurrentLetter] = useRecoilState(currentViewLetter); //api로 받아오는 편지 정보들()
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const BASE_URL = "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080"
   useEffect(() => {
@@ -40,21 +40,9 @@ function ViewLetter({ letterId }: propsType) {
     .then((res)=>res.json())
     .then((res)=>{
       setCurrentLetter(res.result)
-      console.log(currentLetter)
+      console.log("현재 편지", currentLetter)
     })
-        // fetch(`${BASE_URL}/posts/tags/${tagID}`, {
-    //   method: "GET",
-    //   headers: {
-    //     "X-ACCESS-TOKEN": userInfo.logintoken,
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     res.result.map((item: ILetter) => LETTERLIST.push(item));
-    //     setLetters([...LETTERLIST]);
-    //   });
-    // return [...LETTERLIST];
-  }, [])
+  }, [letterId]) //편지버튼 선택이 바뀔때마다 api 호출
   useEffect(() => {
     setPlus(false);
   }, [letterId]);
@@ -67,8 +55,10 @@ function ViewLetter({ letterId }: propsType) {
   return (
   <div>
     <div style={{position:"relative", width:"100%", height:"86vh"}}>
-        {/* <LetterPaper src='/img/autumn.png'/>   */}
-        <LetterPaper paper={(currentLetter.paper)}/>
+        <LetterPaper src='/img/autumn.png'/>  
+        {/* 편지지 구현이 아직 안되어있어서 임시로 가을 편지지로 넣어놨습니다. */}
+        {/* <LetterPaper paper={(currentLetter.paper)}/> */}
+        {/* LetterContent는 편지지마다 다른 배치를 위한 div입니다. */}
         <LetterContent paper={Number(currentLetter.paper)}>
             <p className='sender'><span>{currentLetter.sender}</span>님에게서 온 편지</p>
             {/* <p className='content'>{currentLetter.content}</p> */}

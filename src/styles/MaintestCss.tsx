@@ -35,11 +35,13 @@ export const ViewLetterListGrid = styled.div`
 
 export const TagSenderWrap = styled.div`
   display: flex;
-  display: flex;
-  flex-direction: column;
   flex-direction: column;
   justify-content: center;
-  justify-content: center;
+  align-items: center;
+  button{
+    width: 80%;
+  }
+  margin-top: 10px;
 `;
 export const SettingWrap = styled.div`
   width: 80%;

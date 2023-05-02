@@ -9,7 +9,7 @@ import Tag from "./Tag";
 import { useNavigate } from "react-router-dom";
 import ThemeChangeToggle from "./ThemeChangeToggle";
 // import { FetchSenderList, FetchTagList } from "../api";
-import { ITag, userInfoState } from "../atom";
+import { ITag, userInfoState, sortByState } from "../atom";
 //import { useQuery } from "@tanstack/react-query";
 import SenderTagChangeToggle from "./SenderTagChangeToggle";
 import Sender from "./Sender";
@@ -63,7 +63,9 @@ function ViewTag() {
     setSenderList(SENDERLIST);
   }, [senderData])
 
-  const [sortBy, setSortBy] = useState<boolean>(false); //태그로 정렬: 0, 보낸이로 정렬: 1
+  // const [sortBy, setSortBy] = useState<boolean>(false); 편지 페이지에서 다시 돌아왔을 때 보던 페이지 그대로 넘어오려고 recoil로 수정
+  const [atomsortBy, setAtomSortBy] = useRecoilState(sortByState); //태그로 정렬: 0, 보낸이로 정렬: 1
+
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   function FetchTagList() {
     return axios({
@@ -73,34 +75,8 @@ function ViewTag() {
         "X-ACCESS-TOKEN": userInfo.logintoken,
       }
     })
-    // console.log("뭐야시발", userInfo);
-    // const TAGLIST: ITag[] = [];
-    // fetch(`${BASE_URL}/posts/tags`, {
-    //   method: "GET",
-    //   headers: {
-    //     "X-ACCESS-TOKEN": userInfo.logintoken, // login_token,
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     res.result.map((item: ITag) => TAGLIST.push(item));
-    //     console.log(TAGLIST);
-    //   });
-    // return TAGLIST; //꼭 스프레드 연산자를 써야하나,,?
   }
   function FetchSenderList() {
-    // const SENDERLIST: ISender[] = [];
-    // fetch(`${BASE_URL}/posts/senders`, {
-    //   method: "GET",
-    //   headers: {
-    //     "X-ACCESS-TOKEN": userInfo.logintoken,
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     res.result.map((item: ISender) => SENDERLIST.push(item));
-    //   });
-    // return [...SENDERLIST];
     return axios({
       method: 'get',
       url: `${BASE_URL}/posts/senders`,
@@ -132,9 +108,9 @@ function ViewTag() {
       >
         서함
       </h1>
-      <SenderTagChangeToggle sortBy={sortBy} setSortBy={setSortBy} />
+      <SenderTagChangeToggle sortBy={atomsortBy} setSortBy={setAtomSortBy} />
       <TagSenderWrap>
-        {!sortBy
+        {!atomsortBy
           ? //그러면 tagLoading
             taglistLoading
             ? "isloading the tags"

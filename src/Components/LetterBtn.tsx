@@ -15,9 +15,8 @@ interface propsType {
 }
 
 function LetterBtn({letter}:propsType){
-    console.log("letterbtn", letter, (letter.id).toString())
+    console.log("letterbtn", letter, (letter.id).toString(), letter.image)
     const navigate = useNavigate()
-    // 이미 onClick은 ViewLetterList 쪽에서 구현해서 만들어져있었다..지만 이건 p,div, 컴포 눌렀을때 에러 방지용이었따.
     const onClickLetter = (e:any) => {
         const letterId = e.target.id;
         console.log(e.target);
@@ -33,7 +32,7 @@ function LetterBtn({letter}:propsType){
                 null
             }
             {/* <div className="content" dangerouslySetInnerHTML={{__html:letter.content}}></div> */}
-            {/* <div className="content">{letter.content}</div> */}
+            <div className="content">api에 content가 전달되지 않아 대체텍스트로 적어봤습니다. 조금 더 길게 쓰면 어떻게 되는지 보려고 더 길게 쓰고 있어요.</div>
             <p className="date" id={(letter.id).toString()}>{letter.date}</p>
         </LetterBtnCss>
     )

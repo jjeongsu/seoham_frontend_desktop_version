@@ -8,7 +8,7 @@ import { Letters_tag1, Letters_tag2, LetterType } from "../dummydata";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import styled from "styled-components";
-import { currentLettersState, currentTagState, ITag, userInfoState } from "../atom";
+import { currentLettersState, currentTagState, ITag, sortByState, userInfoState, ISender, currentSenderState } from "../atom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { FetchLetterList } from "../api";
 import { useQuery } from "react-query";
@@ -38,24 +38,43 @@ const BASE_URL = `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:
 function ViewLetterList() {
   const [sorting, setSorting] = useState("");
   const navigate = useNavigate();
-  //const userInfo = useRecoilValue(userInfoState);
+  //로그인한 유저 정보 불러오기 - state가 중복해서 불러오는걸 막아준다고 해서 사용해봤어요
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
-  const setLetters = useSetRecoilState(currentLettersState);
+  //선택된 정렬기준 불러오기(tag 0, sender 1)
+  const sortBy = useRecoilValue(sortByState);
+
   //선택된 태그 불러오기
   const currentTag = useRecoilValue<ITag>(currentTagState);
   const tagID = currentTag.tagIdx;
-  console.log(tagID);
+  
+  //선택된 보낸이 불러오기
+  const currentSender = useRecoilValue<ISender>(currentSenderState);
+
+  console.log(tagID, currentSender, sortBy, "tag=false, sender=true"); //recoil 정보들 확인
+ 
+  //태그별 편지 조회
   const { isLoading: letterlistLoading, data: letterlistData } = useQuery(
     ["allLetters", tagID], () => FetchLetterList(tagID));
   const [LetterList, setLetterList] = useRecoilState(currentLettersState); //편지 상태
 
+  //보낸이별 편지 조회
+  const { isLoading: letterlistLoading_sender, data: letterlistData_sender } = useQuery(
+    ["allLetters_sender", currentSender.sender], 
+    () => FetchLetterList_sender(currentSender.sender)
+  );
+
   useEffect(() => {
     const LETTERLIST: ILetter[] = [];
-    console.log(letterlistData);
-    letterlistData?.data.result && letterlistData?.data.result.map((item: ILetter) => LETTERLIST.push(item));
+    console.log("편지 리스트 출력", letterlistData, letterlistData_sender);
+    if (!sortBy){
+      letterlistData?.data.result && letterlistData?.data.result.map((item: ILetter) => LETTERLIST.push(item));
+    }
+    else if(sortBy == true && currentSender.sender != " " ){
+      letterlistData_sender?.data.result && letterlistData_sender?.data.result.map((item: ILetter) => LETTERLIST.push(item));
+    }
     setLetterList([...LETTERLIST]);
-  }, [letterlistData]);
+  }, [letterlistData, letterlistData_sender, sortBy]);
   //letterListData에 api 호출 promise가 담김
 
   console.log(
@@ -79,6 +98,7 @@ function ViewLetterList() {
     }
     setLetterList([...sortedLetterList]);
   };
+
   function FetchLetterList(tagID: number) {
     //tagID에 해당하는 편지 불러오기
     return axios({
@@ -89,10 +109,22 @@ function ViewLetterList() {
       }
     })
   }
+
+  function FetchLetterList_sender(sender: string) {
+    //보낸이에 해당하는 편지 불러오기 - 미구현
+    return axios({
+      method: 'get',
+      url: `${BASE_URL}/posts/senders/${sender}`,
+      headers: {
+        "X-ACCESS-TOKEN": userInfo.logintoken,
+      }
+    })
+  }
+
   return (
     <div style={{ width: "50%" }}>
       {/* 선택된 태그 출력 파트 */}
-      {currentTag.tagName == " " ? (
+      {currentTag.tagName == " " && currentSender.sender == " " ? (
         <NullTagDiv>
           <span style={{ width: "50%" }}>
             <Logo />
@@ -102,9 +134,14 @@ function ViewLetterList() {
         </NullTagDiv>
       ) : (
         <ViewLetterListGrid>
-          <TagNameBar color={currentTag.tagColor}>
-            <p># {currentTag.tagName}</p>
-          </TagNameBar>
+          {!sortBy ? 
+            <TagNameBar color={currentTag.tagColor}>
+              <p># {currentTag.tagName}</p>
+            </TagNameBar>
+            :
+            <p>{currentSender.sender}</p>
+          }
+
           <div>
             <img
               style={{
@@ -117,7 +154,6 @@ function ViewLetterList() {
             <Filter onChange={handleSelect} value={sorting}>
               <option value="by_new">최신순</option>
               <option value="by_old">오래된순</option>
-              <option value="by_sender">보낸이별</option>
             </Filter>
             {sorting === "by_sender" ? "보낸이별로 보여줄 편지 리스트" : null}
           </div>
@@ -126,11 +162,12 @@ function ViewLetterList() {
             style={{
               marginTop: "5px",
               width: "100%",
-              height: "78vh",
+              maxHeight: "78vh",
               overflow: "auto",
               display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              flexWrap: "wrap",
+              flexDirection: "row",
+              justifyContent: "center",
             }}
           >
             {/* 여기다가작성  LetterList로 접근*/}
