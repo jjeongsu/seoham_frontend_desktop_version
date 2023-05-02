@@ -25,7 +25,7 @@ export interface ISender {
   sender: string;
   count: number;
 }
-const BASE_URL = `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080`;
+const BASE_URL =  `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080`;
 function ViewTag() {
   const navigate = useNavigate();
   const onClickMypage = () => {

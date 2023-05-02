@@ -12,7 +12,7 @@ function SenderTagChangeToggle({ sortBy, setSortBy }: IToggleState) {
     setSortBy(true); // 보낸이별 선택시 1값이 들어감
   };
   return (
-    <>
+    <div style={{display: "flex", justifyContent:"center", margin : "20px 0px"}}>
       <ToggleContainer>
         <ToggleBackElement />
         <ToggleElement
@@ -31,7 +31,7 @@ function SenderTagChangeToggle({ sortBy, setSortBy }: IToggleState) {
         </ToggleElement>
         <ToggleCircle isChosen={!sortBy} isTag={false}></ToggleCircle>
       </ToggleContainer>
-    </>
+    </div>
   );
 }
 export default SenderTagChangeToggle;
@@ -59,6 +59,7 @@ const ToggleElement = styled.div<IToggleElem>`
   width: 70px;
   height: 30px;
   z-index: 2;
+  font-weight: 700;
 `;
 const ToggleCircle = styled.div<IToggleElem>`
   background-color: ${(props) => (props.isChosen ? "#FF9494" : "#c0cf7e")};

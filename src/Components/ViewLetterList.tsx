@@ -38,6 +38,10 @@ const BASE_URL = `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:
 function ViewLetterList() {
   const [sorting, setSorting] = useState("");
   const navigate = useNavigate();
+  //const userInfo = useRecoilValue(userInfoState);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+
+  const setLetters = useSetRecoilState(currentLettersState);
   //선택된 태그 불러오기
   const currentTag = useRecoilValue<ITag>(currentTagState);
   const tagID = currentTag.tagIdx;
@@ -75,7 +79,6 @@ function ViewLetterList() {
     }
     setLetterList([...sortedLetterList]);
   };
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   function FetchLetterList(tagID: number) {
     //tagID에 해당하는 편지 불러오기
     return axios({
