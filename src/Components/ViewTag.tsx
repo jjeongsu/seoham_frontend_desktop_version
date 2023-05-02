@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ViewTagGrid,
   SettingWrap,
@@ -8,73 +8,106 @@ import {
 import Tag from "./Tag";
 import { useNavigate } from "react-router-dom";
 import ThemeChangeToggle from "./ThemeChangeToggle";
-import { FetchSenderList, FetchTagList } from "../api";
+// import { FetchSenderList, FetchTagList } from "../api";
 import { ITag, userInfoState } from "../atom";
 //import { useQuery } from "@tanstack/react-query";
 import SenderTagChangeToggle from "./SenderTagChangeToggle";
 import Sender from "./Sender";
 import { useQuery } from "react-query";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
+import axios from "axios";
+
 interface propsType {
   setTag: Function;
   //setTagId:Funtion; 도 추가하기(api 호출에 필요할듯)
 }
 export interface ISender {
-  senderName: string;
-  senderCount: number;
+  sender: string;
+  count: number;
 }
-const BASE_URL = `https://seohamserver.shop`;
+const BASE_URL = `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080`;
 function ViewTag() {
+  const navigate = useNavigate();
   const onClickMypage = () => {
     console.log("mypage");
+    navigate('/mypage');
   };
   const onClickSetting = () => {
     console.log("setting");
   };
-  const navigate = useNavigate();
   const onClick = () => {
     navigate("/");
   };
   //태그리스트불러오기
-  const { isLoading: taglistLoading, data: tagData } = useQuery<ITag[]>(
+  const { isLoading: taglistLoading, data: tagData } = useQuery(
     ["allTags"],
-    FetchTagList
+    () => FetchTagList()
   );
-  //보낸이 목록 불러오기
-  const { isLoading: senderlistLoading, data: senderData } = useQuery<
-    ISender[]
-  >(["allSenders"], FetchSenderList);
-  const [sortBy, setSortBy] = useState<boolean>(false); //태그로 정렬: 0, 보낸이로 정렬: 1
-  
-  function FetchTagList() {
-    const userInfo = useRecoilValue(userInfoState);
+  const [tagList, setTagList] = useState<ITag[]>([]);
+  useEffect(() =>{
     const TAGLIST: ITag[] = [];
-    fetch(`${BASE_URL}/posts/tags?userIdx=${userInfo.userIdx}`, {
-      method: "GET",
+    tagData?.data.result.map((item: ITag) => TAGLIST.push(item));
+
+    console.log(TAGLIST);
+    setTagList(TAGLIST);
+  }, [tagData])
+
+  //보낸이 목록 불러오기
+  const { isLoading: senderlistLoading, data: senderData } = useQuery(["allSenders"], FetchSenderList);
+  const [senderList, setSenderList] = useState<ISender[]>([]);
+  useEffect(() =>{
+    const SENDERLIST: ISender[] = [];
+    senderData?.data.result.map((item: ISender) => SENDERLIST.push(item));
+
+    console.log("SENDERLIST: ", senderData);
+    setSenderList(SENDERLIST);
+  }, [senderData])
+
+  const [sortBy, setSortBy] = useState<boolean>(false); //태그로 정렬: 0, 보낸이로 정렬: 1
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  function FetchTagList() {
+    return axios({
+      method: 'get',
+      url: `${BASE_URL}/posts/tags`,
       headers: {
         "X-ACCESS-TOKEN": userInfo.logintoken,
-      },
+      }
     })
-      .then((res) => res.json())
-      .then((res) => {
-        res.result.map((item: ITag) => TAGLIST.push(item));
-      });
-    return [...TAGLIST]; //꼭 스프레드 연산자를 써야하나,,?
+    // console.log("뭐야시발", userInfo);
+    // const TAGLIST: ITag[] = [];
+    // fetch(`${BASE_URL}/posts/tags`, {
+    //   method: "GET",
+    //   headers: {
+    //     "X-ACCESS-TOKEN": userInfo.logintoken, // login_token,
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     res.result.map((item: ITag) => TAGLIST.push(item));
+    //     console.log(TAGLIST);
+    //   });
+    // return TAGLIST; //꼭 스프레드 연산자를 써야하나,,?
   }
   function FetchSenderList() {
-    const userInfo = useRecoilValue(userInfoState);
-    const SENDERLIST: ISender[] = [];
-    fetch(`${BASE_URL}/post/senders`, {
-      method: "GET",
+    // const SENDERLIST: ISender[] = [];
+    // fetch(`${BASE_URL}/posts/senders`, {
+    //   method: "GET",
+    //   headers: {
+    //     "X-ACCESS-TOKEN": userInfo.logintoken,
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     res.result.map((item: ISender) => SENDERLIST.push(item));
+    //   });
+    // return [...SENDERLIST];
+    return axios({
+      method: 'get',
+      url: `${BASE_URL}/posts/senders`,
       headers: {
         "X-ACCESS-TOKEN": userInfo.logintoken,
-      },
+      }
     })
-      .then((res) => res.json())
-      .then((res) => {
-        res.result.map((item: ISender) => SENDERLIST.push(item));
-      });
-    return [...SENDERLIST];
   }
   return (
     <ViewTagGrid>
@@ -105,8 +138,9 @@ function ViewTag() {
           ? //그러면 tagLoading
             taglistLoading
             ? "isloading the tags"
-            : tagData?.map((tag: ITag) => (
+            : tagList?.map((tag: ITag) => (
                 <Tag
+                  key={tag.tagIdx}
                   tagName={tag.tagName}
                   tagIdx={tag.tagIdx}
                   tagColor={tag.tagColor}
@@ -115,12 +149,14 @@ function ViewTag() {
           : //그러면 senderLading
           senderlistLoading
           ? "isLoading the senders"
-          : senderData?.map((sender: ISender) => (
+          : senderList?.map((sender: ISender, index) => (
               <Sender
-                senderName={sender.senderName}
-                senderCount={sender.senderCount}
+                key={index}
+                sender={sender.sender}
+                count={sender.count}
               />
-            ))}
+            ))
+        }
       </TagSenderWrap>
       <SettingWrap>
         <MyBtn onClick={onClickMypage}>

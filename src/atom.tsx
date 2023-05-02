@@ -22,12 +22,6 @@ export const tagState = atom<INewTag[]>({
   default: [],
 });
 
-//편지 내용 임시 저장(실제로는 안쓸거임!!)
-export const letterState = atom({
-  key: "letter",
-  default: "",
-});
-
 //pickedDate
 export const pickedDate = atom<Date>({
   key: "mydate",
@@ -42,7 +36,7 @@ export interface ITag {
 //태그리스트에서 현재 선택한 편지
 export const currentTagState = atom<ITag>({
   key: "currentTag",
-  default: { tagName: " ", tagIdx: 0, tagColor: "" },
+  default: { tagName: " ", tagIdx: -1, tagColor: "" },
 });
 
 //현재 보여주는 편지목록에 담긴 편지들
@@ -102,3 +96,50 @@ export const Infostate = atom<UserInfo>({
     letterNum: 0,
   },
 });
+
+//sender
+export const currentSenderState = atom({
+  key: "currentSender",
+  default: {sender: " ", count: 0},
+})
+
+//toggle
+export const sortBy = atom({
+  key: "sort",
+  default: {sortBy: "tag"}, //태그 "tag", 보낸이 "sender"
+})
+
+//편지 내용 임시 저장(실제로는 안쓸거임!!)
+export const letterState = atom({
+  key: "letter",
+  default: "",
+});
+
+//현재 출력중인 편지 정보
+export interface LetterInfo {
+  postIdx: number,
+  sender: string,
+  date: number,
+  tagIdx: number[],
+  tagName: string[],
+  tagColor: string[],
+  letterIdx: number,
+  image: string | null,
+  content: string | null,
+  paper: number | undefined,
+}
+export const currentViewLetter = atom({
+  key: "currentViewLetter",
+  default: {
+    postIdx: -1,
+    sender: "",
+    date: 0,
+    tagIdx: [],
+    tagName: [],
+    tagColor: [],
+    letterIdx: -1,
+    image: null,
+    content: null,
+    paper: 0,
+  }
+})

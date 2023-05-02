@@ -3,7 +3,6 @@ import {
   Test,
   TagNameBar,
   NullTagDiv,
-  LetterBtn,
 } from "../styles/MaintestCss";
 import { Letters_tag1, Letters_tag2, LetterType } from "../dummydata";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +12,12 @@ import { currentLettersState, currentTagState, ITag, userInfoState } from "../at
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { FetchLetterList } from "../api";
 import { useQuery } from "react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { sortByNew, sortByOld } from "../sort";
 import { on } from "events";
+import axios from "axios";
+import LetterBtn from "./LetterBtn";
+
 
 //안쓸거임 나중에 삭제하기
 interface propsType {
@@ -30,31 +32,34 @@ export interface ILetter {
   sender: string;
   date: string;
   letterIdx: number;
+  image: string|null;
 }
-const BASE_URL = `https://seohamserver.shop`;
+const BASE_URL = `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080`;
 function ViewLetterList() {
   const [sorting, setSorting] = useState("");
   const navigate = useNavigate();
   //선택된 태그 불러오기
   const currentTag = useRecoilValue<ITag>(currentTagState);
   const tagID = currentTag.tagIdx;
-  //선택된 태그에 해당하는 편지 불러오기
-  const { isLoading: letterlistLoading, data: letterlistData } = useQuery<
-    ILetter[]
-  >(["allLetters", tagID], () => FetchLetterList(tagID));
+  console.log(tagID);
+  const { isLoading: letterlistLoading, data: letterlistData } = useQuery(
+    ["allLetters", tagID], () => FetchLetterList(tagID));
   const [LetterList, setLetterList] = useRecoilState(currentLettersState); //편지 상태
-  //letterListData에 태그-편지 리스트셋이 담김.
+
+  useEffect(() => {
+    const LETTERLIST: ILetter[] = [];
+    console.log(letterlistData);
+    letterlistData?.data.result && letterlistData?.data.result.map((item: ILetter) => LETTERLIST.push(item));
+    setLetterList([...LETTERLIST]);
+  }, [letterlistData]);
+  //letterListData에 api 호출 promise가 담김
+
   console.log(
     "태그이름",
     currentTag.tagName,
     "해당하는 편지 세트",
     letterlistData
   );
-  const onClickLetter = (e: any) => {
-    const letterId = e.target.id;
-    console.log("id::::::", letterId);
-    navigate("/letter", { state: { letterId } });
-  };
   console.log(Letters_tag1);
   const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const sort = e.target.value;
@@ -70,28 +75,21 @@ function ViewLetterList() {
     }
     setLetterList([...sortedLetterList]);
   };
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   function FetchLetterList(tagID: number) {
-    const userInfo = useRecoilValue(userInfoState);
-    const LETTERLIST: ILetter[] = [];
-    const setLetters = useSetRecoilState(currentLettersState);
     //tagID에 해당하는 편지 불러오기
-    fetch(`${BASE_URL}/posts/tags/${tagID}`, {
-      method: "GET",
+    return axios({
+      method: 'get',
+      url: `${BASE_URL}/posts/tags/${tagID}`,
       headers: {
         "X-ACCESS-TOKEN": userInfo.logintoken,
-      },
+      }
     })
-      .then((res) => res.json())
-      .then((res) => {
-        res.result.map((item: ILetter) => LETTERLIST.push(item));
-        setLetters([...LETTERLIST]);
-      });
-    return [...LETTERLIST];
   }
   return (
     <div style={{ width: "50%" }}>
       {/* 선택된 태그 출력 파트 */}
-      {currentTag.tagName == null ? (
+      {currentTag.tagName == " " ? (
         <NullTagDiv>
           <span style={{ width: "50%" }}>
             <Logo />
@@ -135,13 +133,9 @@ function ViewLetterList() {
             {/* 여기다가작성  LetterList로 접근*/}
             {LetterList.map((letter, index) => (
               <LetterBtn
-                key={letter.letterIdx}
-                onClick={onClickLetter}
-                id={letter.letterIdx.toString()}
-              >
-                <p className="sender">{letter.sender}</p>
-                <p className="date">{letter.date}</p>
-              </LetterBtn>
+                letter={{id:letter.postIdx, date:letter.date, sender:letter.sender, image:letter.image}}                
+                key={letter.postIdx}               
+              />
             ))}
           </div>
         </ViewLetterListGrid>
@@ -157,31 +151,4 @@ const Filter = styled.select`
   padding: 5px 30px 5px 10px;
   border-radius: 10px;
   outline: 0 none;
-`;
-
-const LetterBtnCss = styled.button`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 10px 30px;
-  width: 90%;
-  // height: 160px;
-  margin: 5px;
-  border-radius: 10px;
-  border: 0;
-  &:hover,
-  &:active {
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-  }
-  .sender {
-    align-self: flex-start;
-    font-weight: bold;
-    background: transparent;
-    color: black;
-  }
-  .date {
-    align-self: flex-end;
-    background: transparent;
-    color: black;
-  }
 `;

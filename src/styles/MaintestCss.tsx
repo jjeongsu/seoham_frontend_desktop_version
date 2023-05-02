@@ -71,7 +71,8 @@ export const TagNameBar = styled.div<{ color: string }>`
   text-align: center;
   border-radius: 20px;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-  background-color: ${(props) => props.color};
+  background-color: transparent;
+  background: ${(props) => props.color};
   p {
     font-size: large;
     font-weight: bold;

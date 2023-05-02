@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 function BackButton() {
   const navigate = useNavigate();
   const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    navigate("/login");
+    navigate(-1);
   };
   return (
     <button
