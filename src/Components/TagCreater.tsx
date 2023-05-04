@@ -1,9 +1,11 @@
 import { match } from "assert";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { tagState } from "../atom";
-
+import { ITag, tagState, userInfoState } from "../atom";
+import axios from "axios";
+import { useQuery } from "react-query";
+const BASE_URL =  `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080`;
 const TAGCOLOR = [
   "#C7AC98",
   "#E7C3B1",
@@ -12,7 +14,13 @@ const TAGCOLOR = [
   "#FFEDDB",
 ]
 function TagCreater(){
-  const taglist = ['apple', 'banana', 'cinamon','alice','princess','birthday','hello','wallet','고마워','엄마한테온편지']; //이미 만들어진 태그들 => 이후에 수정하기
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [tagList, setTagList] = useState<ITag[]>([]);
+  const taglist: any[] = (()=> {
+    let newlist: any[] = [];
+    tagList.map((t) => newlist.push(t.tagName));
+    return newlist;
+  })(); //기존 태그리스트에서 name만 모은 배열
   const [tags,setTags] = useRecoilState(tagState); //atom
   const [isOpenBox, setIsOpenBox] = useState<boolean>(false); //드롭박스 펼칠지 말지
   const [inputValue, setInputValue] = useState<string>(""); //인풋필드에 들어온 값
@@ -23,7 +31,7 @@ function TagCreater(){
     console.log(newValue);
     setInputValue(newValue);
     if(newValue.length > 0){
-      const chosenList = taglist.filter((tl) => 
+      const chosenList = taglist?.filter((tl) => 
         tl.includes(newValue)
       );
       setMatchedTagList(chosenList);
@@ -46,7 +54,7 @@ function TagCreater(){
       }
     });
     !isDubble && setTags((oldTags) => [
-      { text: tag, id: Date.now()},
+      { text: tag, id: tagList[Number(tag.slice(-1))-1].tagIdx},
       ...oldTags,
     ]);
     setInputValue("");
@@ -88,6 +96,31 @@ function TagCreater(){
       }
     }
   }
+  const { isLoading: taglistLoading, data: tagData } = useQuery(
+    ["allTags"],
+    () => FetchTagList()
+  );
+  useEffect(() =>{
+    const TAGLIST: ITag[] = [];
+    tagData?.data.result.map((item: ITag) => TAGLIST.push(item));
+
+    console.log(TAGLIST);
+    setTagList(TAGLIST);
+  }, [tagData])
+  function FetchTagList() {
+    return axios({
+      method: 'get',
+      url: `${BASE_URL}/posts/tags`,
+      headers: {
+        "X-ACCESS-TOKEN": userInfo.logintoken,
+      }
+    })
+  }
+  console.log('taglist', taglist);
+  console.log('현재 atom에 들어간 tag', tags);
+  useEffect(()=>{
+    setTags([]);
+  },[])
   return(
     < >
       <div style={{display:"block", padding:"1vw" }}>
