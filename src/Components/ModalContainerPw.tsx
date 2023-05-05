@@ -1,5 +1,5 @@
-import { useRecoilState } from "recoil";
-import { mypagePwModal } from "../atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { mypagePwModal, userInfoState } from "../atom";
 import { CreateStyledInputButton } from "../Components/loginStyled";
 import ModalPw from "../Components/Modal_pw";
 import { FlexDiv, MypageInput } from "../styles/MypageStyled";
@@ -9,6 +9,7 @@ import axios from "axios";
 function ModalContainerPw() {
   const [modalOpen, setmodalOpen] = useRecoilState(mypagePwModal);
   const passRef = useRef<HTMLInputElement>(null);
+  const userInfo = useRecoilValue(userInfoState);
   const modalClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
@@ -19,7 +20,7 @@ function ModalContainerPw() {
         },
         {
           headers: {
-            "x-access-token": localStorage.getItem("login_token"),
+            "x-access-token": userInfo.logintoken,
             "Content-Type": "application/json",
           },
         }

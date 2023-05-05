@@ -16,7 +16,7 @@ function Calender() {
           value={value}
           formatDay={(locale, date) => moment(date).format("DD")}
           showNeighboringMonth={false}
-          onChange = {onChange}
+          onChange={onChange}
         />
       </CaldendarContainer>
     </>

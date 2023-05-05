@@ -11,12 +11,28 @@ import {
   ModalStyledInput,
   ModalStyledInputButton,
   MyPageModal,
+  ModalinPopup,
+  ResponseMessage,
+  ModalinButton,
 } from "../styles/Modal";
 import { FlexDiv } from "../styles/MypageStyled";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { modalInModal, modalInModalMessage, userInfoState } from "../atom";
 
 type Props = {
   modalClose: () => void;
   nickName?: string;
+  message?: string;
+};
+
+const ReturnNextModal = ({ modalClose, message }: Props) => {
+  return (
+    <ModalinPopup>
+      <img src="/img/love_letter.png" alt="모달용배너" />
+      <ResponseMessage>{message}</ResponseMessage>
+      <ModalinButton onClick={modalClose}>닫기</ModalinButton>
+    </ModalinPopup>
+  );
 };
 
 function Modalname({ modalClose }: Props, { nickName }: Props) {
@@ -28,6 +44,13 @@ function Modalname({ modalClose }: Props, { nickName }: Props) {
   } = useForm<{ nickname: string; idCheck: boolean }>({ mode: "onChange" });
 
   const [check, setCheck] = useState<string>("");
+  const userInfo = useRecoilValue(userInfoState);
+  const [nextModalOpen, setNextModalOpen] = useRecoilState(modalInModal);
+  const [nextModalMsg, setNextModalMsg] = useRecoilState(modalInModalMessage);
+  const nextModalClose = () => {
+    setNextModalOpen(!nextModalOpen);
+    modalClose();
+  };
 
   const CheckName = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -66,16 +89,19 @@ function Modalname({ modalClose }: Props, { nickName }: Props) {
           },
           {
             headers: {
-              "x-access-token": localStorage.getItem("login_token"),
+              "x-access-token": userInfo.logintoken,
               "Content-Type": "application/json",
             },
           }
         );
         if (res.data.isSuccess) {
-          alert(res.data.message);
-          modalClose();
+          setValue("idCheck", false);
+          setNextModalOpen(!nextModalOpen);
+          setNextModalMsg(res.data.message);
         } else {
-          alert("오류가 발생하였습니다");
+          setValue("idCheck", false);
+          setNextModalOpen(!nextModalOpen);
+          setNextModalMsg("오류가 발생하였습니다");
         }
       } catch (error) {
         console.log(error);
@@ -133,6 +159,12 @@ function Modalname({ modalClose }: Props, { nickName }: Props) {
         <ModalMargin>
           <ModalButton type="submit" disabled={!isValid} onClick={ChangeName}>
             사용하기
+            {nextModalOpen && (
+              <ReturnNextModal
+                modalClose={nextModalClose}
+                message={nextModalMsg}
+              />
+            )}
           </ModalButton>
         </ModalMargin>
       </MyPageModal>

@@ -2,10 +2,18 @@ import React from "react";
 // import back from "../../public/img/Vector 4.png";
 import { useNavigate } from "react-router-dom";
 
-function BackButton() {
+type Props = {
+  from?: string;
+};
+
+function BackButton({ from }: Props) {
   const navigate = useNavigate();
   const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    navigate(-1);
+    if (from === "mypage") {
+      navigate(-1);
+    } else {
+      navigate("/login");
+    }
   };
   return (
     <button

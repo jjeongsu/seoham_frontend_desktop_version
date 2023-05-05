@@ -8,6 +8,12 @@
   font-style: normal; */
 }
 
+.ql-editor {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  scrollbar-color: transparent;
+}
+
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="arial"]::before,
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="arial"]::before {
   content: "Arial";
