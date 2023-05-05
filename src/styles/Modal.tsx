@@ -99,3 +99,39 @@ export const ResponseMessage = styled.div`
   justify-content: center;
   margin: 10px 0px 10px 0px;
 `;
+
+//이중 모달 관련
+export const ModalinPopup = styled.div`
+  width: 360px;
+  height: 180px;
+  z-index: 150;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
+  background-color: white;
+  justify-content: center;
+  overflow: auto;
+
+  img {
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    margin: 10px 0px 10px 0px;
+  }
+`;
+
+export const ModalinButton = styled.button`
+  width: 110px;
+  height: 35px;
+  border-radius: 30px;
+  color: white;
+  background-color: #ef9f9f;
+  border: transparent;
+  font-size: 15px;
+  font-weight: 600;
+  justify-content: center;
+  margin: 10px 0px 0px 10px;
+`;

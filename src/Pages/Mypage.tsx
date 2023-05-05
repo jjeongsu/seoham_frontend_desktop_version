@@ -21,18 +21,20 @@ import {
 import PopupMessage from "../Components/PopupMessage";
 import S3Uploader from "../Components/ProfileAws";
 import axios from "axios";
+import { userInfoState } from "../atom";
 
 function Mypage() {
   const [modalOpen, setModalOpen] = useRecoilState(popUpModal);
   const [message, setMessage] = useRecoilState(popUpMessage);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState<boolean>(isLogAtom);
   const [userInfo, setUserInfo] = useRecoilState<UserInfo>(Infostate);
+  const [userLogin, setUserLogin] = useRecoilState(userInfoState);
   useEffect(() => {
     async function getUserInfo() {
       try {
         const res = await axios.get(
           "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/mypage/info",
-          { headers: { "x-access-token": localStorage.getItem("login_token") } }
+          { headers: { "x-access-token": userLogin.logintoken } }
         );
         setUserInfo({
           name: res.data.result.nickname,
@@ -47,8 +49,10 @@ function Mypage() {
   }, [userInfo, setUserInfo]);
 
   const Logout = (e: React.MouseEvent<HTMLButtonElement>) => {
-    localStorage.removeItem("login_token");
-    localStorage.removeItem("userIdx");
+    setUserLogin({
+      logintoken: "",
+      userIdx: NaN,
+    });
     setIsLoggedIn(false);
     setModalOpen(!modalOpen);
     setMessage("로그아웃 되었습니다.");
@@ -59,11 +63,14 @@ function Mypage() {
       try {
         const res = await axios.delete(
           "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/mypage/delete",
-          { headers: { "x-access-token": localStorage.getItem("login_token") } }
+          { headers: { "x-access-token": userLogin.logintoken } }
         );
         if (res.data.isSuccess) {
           setIsLoggedIn(false);
-          localStorage.removeItem("login_token");
+          setUserLogin({
+            logintoken: "",
+            userIdx: NaN,
+          });
           setModalOpen(!modalOpen);
           setMessage("탈퇴가 완료되었습니다.");
         } else {
@@ -99,7 +106,7 @@ function Mypage() {
     <div>
       <div style={{ backgroundColor: "#EF9F9F" }}>
         <MypageMaindiv>
-          <BackButton></BackButton>
+          <BackButton from="mypage"></BackButton>
         </MypageMaindiv>
         <S3Uploader />
         <ProfileDiv>
