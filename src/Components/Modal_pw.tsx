@@ -10,11 +10,17 @@ import {
   ModalMargin,
   ModalStyledInput,
   MyPageModal,
+  ModalinPopup,
+  ResponseMessage,
+  ModalinButton,
 } from "../styles/Modal";
 import { FlexDiv } from "../styles/MypageStyled";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { modalInModal, modalInModalMessage, userInfoState } from "../atom";
 
 type Props = {
   modalClose: () => void;
+  message?: string;
 };
 
 interface PwValue {
@@ -23,9 +29,26 @@ interface PwValue {
   numberCheck: boolean;
 }
 
+const ReturnNextModal = ({ modalClose, message }: Props) => {
+  return (
+    <ModalinPopup>
+      <img src="/img/love_letter.png" alt="모달용배너" />
+      <ResponseMessage>{message}</ResponseMessage>
+      <ModalinButton onClick={modalClose}>닫기</ModalinButton>
+    </ModalinPopup>
+  );
+};
+
 function ModalPw({ modalClose }: Props) {
   const [show, setShow] = useState<boolean>(false);
   const [confirmShow, setConfirmShow] = useState<boolean>(false);
+  const userInfo = useRecoilValue(userInfoState);
+  const [nextModalOpen, setNextModalOpen] = useRecoilState(modalInModal);
+  const [nextModalMsg, setNextModalMsg] = useRecoilState(modalInModalMessage);
+  const nextModalClose = () => {
+    setNextModalOpen(!nextModalOpen);
+    modalClose();
+  };
   const onShowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setShow(!show);
   };
@@ -52,7 +75,7 @@ function ModalPw({ modalClose }: Props) {
         },
         {
           headers: {
-            "x-access-token": localStorage.getItem("login_token"),
+            "x-access-token": userInfo.logintoken,
             "Content-Type": "application/json",
           },
         }
@@ -66,21 +89,22 @@ function ModalPw({ modalClose }: Props) {
           },
           {
             headers: {
-              "x-access-token": localStorage.getItem("login_token"),
+              "x-access-token": userInfo.logintoken,
               "Content-Type": "application/json",
             },
           }
         );
         if (res.data.isSuccess) {
-          alert(res.data.result);
+          setNextModalOpen(!nextModalOpen);
+          setNextModalMsg(res.data.result);
         } else {
-          alert("오류가 발생했습니다");
+          setNextModalOpen(!nextModalOpen);
+          setNextModalMsg("오류가 발생했습니다");
         }
       }
     } catch (error) {
       console.log(error);
     }
-    modalClose();
   };
 
   return (
@@ -186,6 +210,12 @@ function ModalPw({ modalClose }: Props) {
             onClick={changePawword}
           >
             변경 완료
+            {nextModalOpen && (
+              <ReturnNextModal
+                modalClose={nextModalClose}
+                message={nextModalMsg}
+              />
+            )}
           </ModalButton>
         </ModalMargin>
       </MyPageModal>

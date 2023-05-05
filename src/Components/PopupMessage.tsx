@@ -67,6 +67,9 @@ function PopupMessage({ message }: Props) {
           ) {
             setModalOpen(false);
             navigate("/");
+          } else if (message === "로그인 되었습니다") {
+            setModalOpen(false);
+            navigate("/edit");
           } else {
             setModalOpen(false);
           }

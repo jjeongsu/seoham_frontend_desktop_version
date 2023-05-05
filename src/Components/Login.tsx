@@ -1,4 +1,4 @@
-import { isLogAtom, userInfoState } from "../atom";
+import { isLogAtom, popUpMessage, popUpModal, userInfoState } from "../atom";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -14,17 +14,20 @@ import {
   LongInputDiv,
   LoginErrorDiv,
 } from "./loginStyled";
+import PopupMessage from "../Components/PopupMessage";
 
 function LoginPage() {
   const navigate = useNavigate();
   const setUserInfo = useSetRecoilState(userInfoState);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState<boolean>(isLogAtom);
+  const [modalOpen, setModalOpen] = useRecoilState(popUpModal);
+  const [message, setMessage] = useRecoilState(popUpMessage);
   const [show, setShow] = useState<boolean>(false);
-  useEffect(() => {
-    if (isLoggedIn === true) {
-      navigate("/edit");
-    }
-  });
+  // useEffect(() => {
+  //   if (isLoggedIn === true) {
+  //     navigate("/edit");
+  //   }
+  // });
 
   const regExpEm =
     /^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/;
@@ -77,19 +80,17 @@ function LoginPage() {
           logintoken: res.data.result.jwt,
           userIdx: res.data.result.userIdx,
         });
-        localStorage.setItem("login_token", res.data.result.jwt);
-        localStorage.setItem("userIdx", res.data.result.userIdx);
+        setModalOpen(!modalOpen);
+        setMessage("로그인 되었습니다");
         setIsLoggedIn(true);
-        alert("로그인 되었습니다");
-        navigate("/edit");
       } else {
-        alert("이메일과 비밀번호를 다시 한 번 확인해주세요");
+        setModalOpen(!modalOpen);
+        setMessage("이메일과 비밀번호를 다시 한 번 확인해주세요");
       }
     } catch (error) {
-      alert("서버 오류가 발생했습니다.");
+      setModalOpen(!modalOpen);
+      setMessage("서버 오류가 발생했습니다.");
       console.log(error);
-      console.log(localStorage.getItem("login_token"));
-      console.log(isLoggedIn);
     }
   };
 
@@ -156,6 +157,7 @@ function LoginPage() {
         <LoginButton type="submit" disabled={!isValid} onClick={onSubmit}>
           로그인
         </LoginButton>
+        <PopupMessage message={message} />
       </LongInputDiv>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Link to="/find/Id">

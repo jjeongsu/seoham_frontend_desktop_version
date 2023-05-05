@@ -7,12 +7,13 @@ import QuillToolbar from "../EditorToolBar";
 import QuillCustom from "./ReactQuill";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { pickedDate, tagState } from "../atom";
+import { letterState, pickedDate, tagState } from "../atom";
 import Calender from "./Caldender";
 import TagCreater from "./TagCreater";
 import ThemeChangeBtn from "./ThemeChangeBtn";
 import { useRef, useState } from "react";
 import SelectPaper from "./SelectPaper";
+import { useNavigate } from "react-router-dom";
 
 Quill.register("modules/ImageResize", ImageResize);
 
@@ -29,22 +30,40 @@ Quill.register(Font, true);
 */
 
 function Editor() {
-  const [sender, setSender] =useState<string>("")
-  const getdate = String(moment(useRecoilValue(pickedDate)).format("YYYY년 MM월 DD일"));
+  const navigate = useNavigate();
+  const [sender, setSender] = useState<string>("");
+  const getdate = String(
+    moment(useRecoilValue(pickedDate)).format("YYYY년 MM월 DD일")
+  );
   const gettags = useRecoilValue(tagState);
-  const handleSenderChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
+  const getcontents = useRecoilValue(letterState);
+  const handleSenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSender(e.target.value);
-  }
-  const [isSaveClick, setIsSaveClick] = useState<boolean>(false);
-  const register = (e : React.MouseEvent<HTMLButtonElement>) => {
-    setIsSaveClick(prev => !prev); //버튼색 바꾸고
+  };
+  const [isSaveClick, setIsSaveClick] = useState<boolean>(false); //최종 POST버튼
+  const register = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setIsSaveClick((prev) => !prev); //버튼색 바꾸고
+    const tagIdlist: any[] = (() => {
+      let newlist: any[] = [];
+      gettags.map((t) => newlist.push(t.id));
+      return newlist;
+    })();
+    console.log("서버에 보낼 태그 아이디 리스트", tagIdlist);
     //서버에 보낼 객체 만들기 -> 만드는 중..
     const newPost = {
-      date : getdate,
-      sender : sender, 
-    }
-
-  }
+      date: getdate.slice(0, 4) + getdate.slice(6, -5) + getdate.slice(10, -1),
+      sender: sender,
+      contents: getcontents,
+      letterIdx: null, //여기에 선택한 편지지 id,
+      tagIdx: tagIdlist, //여기에 선택한 태그리스트
+    };
+    //여기에 fetch 함수
+    
+    //페이지 넘기기
+    setTimeout(() => navigate("/home"), 1000);
+  };
+  console.log("tagids", gettags);
+  
   //getdate.slice(0,4)
   console.log("getdate",getdate.trim());
   console.log(getdate.slice(0,4));
@@ -77,14 +96,13 @@ function Editor() {
         marginTop: "10%",
       }}
     >
-      <Header> 편지 작성하기
-        <SaveBtn onClick = {register}>
+      <Header>
+        {" "}
+        편지 작성하기
+        <SaveBtn onClick={register}>
           <BtnImg
-            src={isSaveClick?
-            "../savebtn_on.png"
-            :
-            "../savebtn_off.png"
-            } />
+            src={isSaveClick ? "../savebtn_on.png" : "../savebtn_off.png"}
+          />
         </SaveBtn>
       </Header>
       <Letter>
@@ -102,8 +120,9 @@ function Editor() {
           }}
         >
           <div>
-            {getdate} 에 
-            <Sender value={sender} onChange={handleSenderChange}/> 님으로 부터 온 편지
+            {getdate} 에
+            <Sender value={sender} onChange={handleSenderChange} /> 님으로 부터
+            온 편지
           </div>
           <TagCreater />
           <Calender />
@@ -144,7 +163,7 @@ const SaveBtn = styled.button`
 const BtnImg = styled.img`
   width: 18px;
   height: 18px;
-`
+`;
 const QuillContainer = styled.div`
   background-color: aliceblue;
   border: 1px solid black;

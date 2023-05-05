@@ -67,6 +67,17 @@ export const popUpMessage = atom({
   default: "",
 });
 
+//이중 모달 관련
+export const modalInModal = atom({
+  key: "modalInModal",
+  default: false,
+});
+
+export const modalInModalMessage = atom({
+  key: "modalInModal",
+  default: "",
+});
+
 export interface IUserInfo {
   logintoken: string;
   userIdx: number;
@@ -99,20 +110,20 @@ export const Infostate = atom<UserInfo>({
 
 //sender
 export interface ISender {
-  sender: string,
-  count: number,
+  sender: string;
+  count: number;
 }
 
 export const currentSenderState = atom<ISender>({
   key: "currentSender",
-  default: {sender: " ", count: 0},
-})
+  default: { sender: " ", count: 0 },
+});
 
 //toggle
 export const sortByState = atom({
   key: "sort",
-  default: false //태그 "false", 보낸이 "true"
-})
+  default: false, //태그 "false", 보낸이 "true"
+});
 
 //편지 내용 임시 저장(실제로는 안쓸거임!!)
 export const letterState = atom({
@@ -122,16 +133,16 @@ export const letterState = atom({
 
 //현재 출력중인 편지 정보
 export interface LetterInfo {
-  postIdx: number,
-  sender: string,
-  date: number,
-  tagIdx: number[],
-  tagName: string[],
-  tagColor: string[],
-  letterIdx: number,
-  image: string | null,
-  content: string | null,
-  paper: number | undefined,
+  postIdx: number;
+  sender: string;
+  date: number;
+  tagIdx: number[];
+  tagName: string[];
+  tagColor: string[];
+  letterIdx: number;
+  image: string | null;
+  content: string | null;
+  paper: number | undefined;
 }
 export const currentViewLetter = atom({
   key: "currentViewLetter",
@@ -146,5 +157,5 @@ export const currentViewLetter = atom({
     image: null,
     content: null,
     paper: 0,
-  }
-})
+  },
+});
