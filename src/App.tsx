@@ -15,10 +15,10 @@ import Mypage from "./Pages/Mypage";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+h1, h2, h3, h4, h5, h6, p, pre,
 a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
+del, dfn, img, ins, kbd, q, s, samp,
+small, strike, sub, sup, tt, var,
 b, u, i, center,
 dl, dt, dd, menu, ol, ul, li,
 fieldset, form, label, legend,
@@ -45,6 +45,20 @@ footer, header, hgroup, main, menu, nav, section {
 }
 body {
   line-height: 1;
+  // 윈도우에 생기는 큰 스크롤바 커스텀
+  &::-webkit-scrollbar {
+    width: 6px;  /* 스크롤바의 너비 */
+  }
+
+  &::-webkit-scrollbar-thumb {
+      height: 30%; /* 스크롤바의 길이 */
+      background: #667182; /* 스크롤바의 색상 */
+      border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+      background: #d8d8d8;  /*스크롤바 뒷 배경 색상*/
+  }
 }
 menu, ol, ul {
   list-style: none;

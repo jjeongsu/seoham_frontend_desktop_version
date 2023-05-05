@@ -167,14 +167,6 @@ function ViewTag() {
             </svg>
           </div>
         </MyBtn>
-        <MyBtn onClick={onClickSetting}>
-          <div>
-            <img
-              style={{ width: "20px", height: "20px" }}
-              src="/img/settings.png"
-            />
-          </div>
-        </MyBtn>
         <ThemeChangeToggle />
       </SettingWrap>
     </ViewTagGrid>

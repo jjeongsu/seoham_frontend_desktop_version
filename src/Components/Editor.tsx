@@ -11,7 +11,8 @@ import { pickedDate, tagState } from "../atom";
 import Calender from "./Caldender";
 import TagCreater from "./TagCreater";
 import ThemeChangeBtn from "./ThemeChangeBtn";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import SelectPaper from "./SelectPaper";
 
 Quill.register("modules/ImageResize", ImageResize);
 
@@ -49,6 +50,23 @@ function Editor() {
   console.log(getdate.slice(0,4));
   console.log("getdate",getdate);
   console.log(getdate.slice(8,3));
+
+  //편지지 선택 모달 관련
+  const [modal, setModal] = useState(false);
+  const [paper, setPaper] = useState(0); //register 함수 만들때 paper 변수를 사용하면 됩니당 (편지지 번호는 1부터 시작)
+  const modalClose = () => { //modal on-off
+    setModal((modalOpen) => !modalOpen)
+  }
+  const modalRef = useRef<HTMLDivElement>(null); //해당 DOM의 정보 넘기기
+  const modalOutSideClick = (e:any) => { //해당 DOM 정보를 통해 위치 비교
+    if(modalRef.current === e.target) {
+      setModal((current) => !current);
+    }
+  }
+  const onClickPaper = () => { //처음에 버튼(편지지 선택하기) 누를 때 모달창 띄우기
+    modalClose();
+  }
+
   return (
     <div
       style={{
@@ -89,6 +107,18 @@ function Editor() {
           </div>
           <TagCreater />
           <Calender />
+          <SelectPaperCss onClick={onClickPaper}>
+            {
+              paper === 0 ?
+              "편지지 선택하기"
+              :
+              <p>{paper}번 편지지 선택</p>
+            }
+          </SelectPaperCss>
+          {
+            modal && 
+            <SelectPaper modalRef={modalRef} modalClose={modalClose} modalOutSideClick={modalOutSideClick} setPaper={setPaper}/>
+          }
         </div>
       </Letter>
       <ThemeChangeBtn />
@@ -138,4 +168,23 @@ const Sender = styled.input`
     outline: none;
   }
   color: ${(props) => props.theme.textColor};
+`;
+const SelectPaperCss = styled.button`
+  width: 200px;
+  height: 2.5em;
+  padding: 7px 15px;
+  border: 1px solid #EF9F9F;
+  border-radius: 20px;
+  background-color: #EF9F9F;
+  color: ${(props) => props.theme.textColor};
+  margin-top: 10px;
+  &:focus {
+    outline:none;
+  }
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+  p{
+    background: transparent;
+  }
 `;

@@ -4,7 +4,6 @@ import {
   TagNameBar,
   NullTagDiv,
 } from "../styles/MaintestCss";
-import { Letters_tag1, Letters_tag2, LetterType } from "../dummydata";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/logo.svg";
 import styled from "styled-components";
@@ -79,11 +78,10 @@ function ViewLetterList() {
 
   console.log(
     "태그이름",
-    currentTag.tagName,
+    currentTag.tagName, currentTag.tagColor,
     "해당하는 편지 세트",
     letterlistData
   );
-  console.log(Letters_tag1);
   const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const sort = e.target.value;
     let sortedLetterList = [];
@@ -124,71 +122,92 @@ function ViewLetterList() {
   return (
     <div style={{ width: "50%" }}>
       {/* 선택된 태그 출력 파트 */}
-      {currentTag.tagName == " " && currentSender.sender == " " ? (
-        <NullTagDiv>
-          <span style={{ width: "50%" }}>
-            <Logo />
-          </span>
-          <p>안녕하세요. 추억을 보관하는 서함입니다.</p>
-          <p>태그를 선택해주세요.</p>
-        </NullTagDiv>
-      ) : (
-        <ViewLetterListGrid>
-          {!sortBy ? 
-            <TagNameBar color={currentTag.tagColor}>
-              <p># {currentTag.tagName}</p>
-            </TagNameBar>
-            :
-            <p>{currentSender.sender}</p>
-          }
-
-          <div>
-            <img
-              style={{
-                width: "20px",
-                marginBottom: "-5px",
-                marginRight: "2px",
-              }}
-              src="/img/filter.png"
-            />
-            <Filter onChange={handleSelect} value={sorting}>
-              <option value="by_new">최신순</option>
-              <option value="by_old">오래된순</option>
-            </Filter>
-            {sorting === "by_sender" ? "보낸이별로 보여줄 편지 리스트" : null}
-          </div>
-
-          <div
+      <ViewLetterListGrid>
+        {/* 태그나 보낸이 선택을 안한 경우 */}
+        {(currentTag.tagName === " " && currentSender.sender === " ") ? <NullContent/> : null}
+        {(currentTag.tagName != " " && currentSender.sender === " " && sortBy) ? <NullContent/> : null}
+        {(currentTag.tagName === " " && currentSender.sender != " " && !sortBy) ? <NullContent/> : null}
+        {!sortBy ? 
+          <TagNameBar color={currentTag.tagColor}>
+            <p># {currentTag.tagName}</p>
+          </TagNameBar>
+          :
+          <p>{currentSender.sender}</p>
+        }
+  
+        <div>
+          <img
             style={{
-              marginTop: "5px",
-              width: "100%",
-              maxHeight: "78vh",
-              overflow: "auto",
-              display: "flex",
-              flexWrap: "wrap",
-              flexDirection: "row",
-              justifyContent: "center",
+              width: "20px",
+              marginBottom: "-5px",
+              marginRight: "2px",
             }}
-          >
-            {/* 여기다가작성  LetterList로 접근*/}
-            {LetterList.map((letter, index) => (
-              <LetterBtn
-                letter={{id:letter.postIdx, date:letter.date, sender:letter.sender, image:letter.image}}                
-                key={letter.postIdx}               
-              />
-            ))}
-          </div>
-        </ViewLetterListGrid>
-      )}
+            src="/img/filter.png"
+          />
+          <Filter onChange={handleSelect} value={sorting}>
+            <option value="by_new">최신순</option>
+            <option value="by_old">오래된순</option>
+          </Filter>
+        </div>
+
+        <ListDivScroll>
+          {/* 여기다가작성  LetterList로 접근*/}
+          {LetterList.map((letter, index) => (
+            <LetterBtn
+              letter={{id:letter.postIdx, date:letter.date, sender:letter.sender, image:letter.image}}                
+              key={letter.postIdx}               
+            />
+          ))}
+        </ListDivScroll>
+      </ViewLetterListGrid>
     </div>
   );
 }
 
 export default ViewLetterList;
 
+const NullContent = () => {
+  return (
+    <NullTagDiv>
+      <span style={{ width: "50%" }}>
+        <Logo />
+      </span>
+      <p>안녕하세요. 추억을 보관하는 서함입니다.</p>
+      <p>태그를 선택해주세요.</p>
+    </NullTagDiv>
+  )
+}
 const Filter = styled.select`
   margin-top: 10px;
   padding: 5px 30px 5px 10px;
   border-radius: 10px;
   outline: 0 none;
+`;
+
+const ListDivScroll = styled.div`
+  margin-top: 5px;
+  width: 100%;
+  max-height: 78vh;
+  overflow: auto;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+
+  // 스크롤바 커스텀
+  /* 아래의 모든 코드는 영역::코드로 사용 */
+  &::-webkit-scrollbar {
+      width: 6px;  /* 스크롤바의 너비 */
+  }
+
+  &::-webkit-scrollbar-thumb {
+      height: 30%; /* 스크롤바의 길이 */
+      background: #667182; /* 스크롤바의 색상 */
+      border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+      background: #d8d8d8;  /*스크롤바 뒷 배경 색상*/
+  }
+  //
 `;

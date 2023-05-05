@@ -85,7 +85,6 @@ export const LetterContent = styled.div<{ paper: number }>`
       }
     }
   }
-  /*스크롤바 커스텀 하고 싶은데 -webkit~~ 이게 안먹히네요*/
   .date {
     background-color: transparent; //
     color: black; //
@@ -93,7 +92,27 @@ export const LetterContent = styled.div<{ paper: number }>`
   }
 `;
 export const ContentDiv = styled.div<{ clickprops: boolean }>`
+  padding: 5px 0px;
+  margin: 6px 0px;
   overflow: ${(props) => (props.clickprops == true ? "auto" : "hidden")};
+
+  // 스크롤바 커스텀
+  /* 아래의 모든 코드는 영역::코드로 사용 */
+  &::-webkit-scrollbar {
+      width: 6px;  /* 스크롤바의 너비 */
+  }
+
+  &::-webkit-scrollbar-thumb {
+      height: 30%; /* 스크롤바의 길이 */
+      background: #667182; /* 스크롤바의 색상 */
+      border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+      background: #d8d8d8;  /*스크롤바 뒷 배경 색상*/
+  }
+  //
+  
   background-color: transparent; //
   p {
     background-color: transparent; //
@@ -104,6 +123,12 @@ export const ContentDiv = styled.div<{ clickprops: boolean }>`
       height: 200px;
       object-fit: contain;
     }
+  }
+
+  //전역 스타일링 무시
+  h1, h2, h3, h4, h5, h6, blockquote {
+    background: transparent;
+    color: black;
   }
 `;
 export const PlusBtn = styled.button<{ clickprops: boolean }>`

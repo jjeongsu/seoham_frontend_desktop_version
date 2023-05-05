@@ -31,6 +31,7 @@ export const ViewLetterListGrid = styled.div`
   justify-content: start;
   align-items: center;
   padding-top: 3%;
+  position: relative;
 `;
 
 export const TagSenderWrap = styled.div`
@@ -53,6 +54,7 @@ export const SettingWrap = styled.div`
 `;
 export const MyBtn = styled.button`
   padding: 2px;
+  margin: 4px 0px;
   border-radius: 9999px;
   border: 0;
   background-color: transparent;
@@ -70,6 +72,8 @@ export const MyBtn = styled.button`
 export const TagNameBar = styled.div<{ color: string }>`
   width: 90%;
   // margin-top: 30px;
+  padding: 6px;
+  margin-bottom: 3px;
   text-align: center;
   border-radius: 20px;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
@@ -78,13 +82,17 @@ export const TagNameBar = styled.div<{ color: string }>`
   p {
     font-size: large;
     font-weight: bold;
+    background: transparent;
+    color: black;
   }
 `;
 export const NullTagDiv = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: absolute;
+  z-index: 1; //부모는 relative, 자식은 absolute로 설정하기
 `;

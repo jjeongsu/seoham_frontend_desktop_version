@@ -1,14 +1,10 @@
-import MainMenu from "./mainTest";
 import styled, { keyframes } from "styled-components";
 import ViewLetterList from "../Components/ViewLetterList";
 import ViewTag from "../Components/ViewTag";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Letters_tag1, Letters_tag2, LetterType } from "../dummydata";
-import { LetterPaper, LetterContent, PlusBtn } from "../styles/LetterTestCss";
-
-import { useRecoilSnapshot, useRecoilState } from "recoil";
-import { currentTagState, letterState } from "../atom"; // react-quill에서 넘어오는 버전으로 수정해서 다시 만들기
+import { useRecoilSnapshot, useRecoilState, useRecoilValue } from "recoil";
+import { currentSenderState, userInfoState } from "../atom"; // react-quill에서 넘어오는 버전으로 수정해서 다시 만들기
+import axios from "axios";
 import ViewLetter from "../Components/ViewLetter";
 
 const DividedPage = styled.div`
@@ -58,8 +54,8 @@ const LetterPage = styled.div`
 const BackBtn = styled.button`
   display: block;
   background-color: transparent;
-  margin-left: 32px;
-  margin-top: 15px;
+  // margin-left: 32px;
+  // margin-top: 15px;
   border: 0;
   img {
     width: 16px;
@@ -70,26 +66,50 @@ const BackBtn = styled.button`
     }
   }
 `;
+const DeleteBtn = styled.button`
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  &:hover{
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+`
 
 function LetterTest() {
   const location = useLocation();
   const navigate = useNavigate();
-  // 현재 선택된 태그 정보 불러오려면
-  const [currentTag, setCurrentTag] = useRecoilState(currentTagState);
-  //const [tag, setTag] = useState([location.state.tagName, location.state.tagId, location.state.tagColor])
-  const [Letter, setLetter] = useRecoilState(letterState);
-  const [plus, setPlus] = useState(false);
-  //console.log("편지 확인 페이지에서의 리스트: ", tag);
+  const userInfo = useRecoilValue(userInfoState);
+  const [currentSender, setCurrentSender] = useRecoilState(currentSenderState);
+  // // 현재 선택된 태그 정보 불러오려면
+  // const [currentTag, setCurrentTag] = useRecoilState(currentTagState);
+  // //const [tag, setTag] = useState([location.state.tagName, location.state.tagId, location.state.tagColor])
+  // const [Letter, setLetter] = useRecoilState(letterState);
+  // const [plus, setPlus] = useState(false);
   console.log("letter Id:", location.state.letterId);
   console.log("letterId 타입: ", typeof Number(location.state.letterId));
-  // const letterId = Number(location.state.letterId)
-  // 이건 지금 letterId가 더미데이터 상에서 중복돼서 발생하는 문제로 보임
-  // 백엔드에서는 letterId도 독립적인 상태니까 currentLetter에 넣어주는 형식으로 작성해도 괜찮을듯
-  // 그리고 api 연결하면 이런 무식한 map 방식으로 id 찾기는 안해도 되니까 더더욱 괜찮을지도????
-  // 이건 희망회로 돌려본다
+
   const onClickBack = () => {
     navigate("/home");
   };
+  const BASE_URL = "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080";
+  const onClickDelete = () => {
+    axios({
+      method: 'delete',
+      url: `${BASE_URL}/posts/delete/${location.state.letterId}`,
+      headers: {
+        "X-ACCESS-TOKEN": userInfo.logintoken,
+      }
+    }).then(function(response){
+      console.log(response);
+      window.alert("편지가 삭제되었습니다.");
+      setCurrentSender({sender: " ", count: 0}) 
+        //보낸이의 편지가 모두 비어서 보낸이 자체가 삭제될 수 있으니 보낸이 정보를 초기화, 태그의 경우 비어있을 경우에도 있을 수 있으니 초기화X
+      navigate("/home");
+    }).catch(function(error){
+      console.log(error);
+      window.alert("에러가 발생했습니다.");
+    })
+  }
   return (
     <div>
       {/* 분할 애니메이션 테스트입니다. */}
@@ -99,9 +119,13 @@ function LetterTest() {
           <ViewLetterList />
         </MenuBar>
         <LetterPage>
-          <BackBtn onClick={onClickBack}>
-            <img src="/img/left-arrow.png" />
-          </BackBtn>
+          <div style={{width:"100%", display:"flex", justifyContent:"space-around", marginTop:"20px", padding:"3px 0px"}}>
+            <BackBtn onClick={onClickBack}>
+              <img src="/img/left-arrow.png" />
+            </BackBtn>
+            <span></span>
+            <DeleteBtn onClick={onClickDelete}>삭제</DeleteBtn>
+          </div>
           <ViewLetter letterId={Number(location.state.letterId)} />
         </LetterPage>
       </DividedPage>
