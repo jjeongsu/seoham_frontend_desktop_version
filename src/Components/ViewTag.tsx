@@ -32,11 +32,8 @@ function ViewTag() {
     console.log("mypage");
     navigate('/mypage');
   };
-  const onClickSetting = () => {
-    console.log("setting");
-  };
   const onClick = () => {
-    navigate("/");
+    navigate("/edit");
   };
   //태그리스트불러오기
   const { isLoading: taglistLoading, data: tagData } = useQuery(
