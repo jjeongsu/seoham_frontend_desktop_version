@@ -25,9 +25,9 @@ const TagBtn = styled.div`
 function ViewLetter({ letterId }: propsType) {
   // console.log("얍", typeof letterId, letterId);
   const [plus, setPlus] = useState(false);
-  const [Letter, setLetter] = useRecoilState(letterState); //react-quill에서 바로 받아오는 편지 내용입니다.(api에서 넘어오는 content가 null이에요.)
+  // const [Letter, setLetter] = useRecoilState(letterState); //react-quill에서 바로 받아오는 편지 내용입니다.
   const [currentLetter, setCurrentLetter] = useRecoilState(currentViewLetter); //api로 받아오는 편지 정보들
-      //(현재 넘어오는 정보들: postIdx, sender, date, tagIdx, tagName, tagColor, letterIdx(편지지), image(content내용이 들어감), content(null 리턴))
+      //(현재 넘어오는 정보들: postIdx, sender, date, tagIdx, tagName, tagColor, letterIdx(편지지), image, content (api 수정 완료!)
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const BASE_URL = "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080"
   useEffect(() => {
@@ -60,7 +60,7 @@ function ViewLetter({ letterId }: propsType) {
         <LetterContent paper={Number(currentLetter.letterIdx)}>
             <p className='sender'><span>{currentLetter.sender}</span>님에게서 온 편지</p>
             {/* image에 content가 들어가고, content는 null이 리턴돼요. */}
-            <ContentDiv clickprops={plus} dangerouslySetInnerHTML={{__html:Letter}}></ContentDiv>
+            <ContentDiv clickprops={plus} dangerouslySetInnerHTML={{__html:currentLetter.content}}></ContentDiv>
             {/* api 수정 이후에 __html:Letter 대신에 currentLetter.content하면 됩니다. */}
             <PlusBtn clickprops={plus} onClick={onClickPlus}>더보기</PlusBtn> 
             <p className='date'>{currentLetter.date}</p>

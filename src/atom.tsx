@@ -154,8 +154,8 @@ export const currentViewLetter = atom({
     tagName: [],
     tagColor: [],
     letterIdx: -1,
-    image: null,
-    content: null,
+    image: "",
+    content: "",
     paper: 0,
   },
 });
