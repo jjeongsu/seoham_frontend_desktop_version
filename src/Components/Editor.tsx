@@ -54,7 +54,7 @@ function Editor() {
       date: getdate.slice(0, 4) + getdate.slice(6, -5) + getdate.slice(10, -1),
       sender: sender,
       contents: getcontents,
-      letterIdx: null, //여기에 선택한 편지지 id,
+      letterIdx: Number(paper), //여기에 선택한 편지지 id,
       tagIdx: tagIdlist, //여기에 선택한 태그리스트
     };
     //여기에 fetch 함수
@@ -102,6 +102,7 @@ function Editor() {
         <SaveBtn onClick={register}>
           <BtnImg
             src={isSaveClick ? "../savebtn_on.png" : "../savebtn_off.png"}
+            title="저장 버튼" // 버튼 호버시 설명글 나오게 하는건데 필요할까 싶어서요..
           />
         </SaveBtn>
       </Header>
