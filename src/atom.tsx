@@ -159,3 +159,9 @@ export const currentViewLetter = atom({
     paper: 0,
   },
 });
+
+// 이미지 주소 저장
+export const imgSrcState = atom({
+  key: "imgSrc",
+  default: "",
+});

@@ -7,7 +7,7 @@ import QuillToolbar from "../EditorToolBar";
 import QuillCustom from "./ReactQuill";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { letterState, pickedDate, tagState } from "../atom";
+import { imgSrcState, letterState, pickedDate, tagState } from "../atom";
 import Calender from "./Caldender";
 import TagCreater from "./TagCreater";
 import ThemeChangeBtn from "./ThemeChangeBtn";
@@ -37,6 +37,7 @@ function Editor() {
   );
   const gettags = useRecoilValue(tagState);
   const getcontents = useRecoilValue(letterState);
+  const getImg = useRecoilValue(imgSrcState); //첫번째 이미지
   const handleSenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSender(e.target.value);
   };
@@ -56,9 +57,10 @@ function Editor() {
       contents: getcontents,
       letterIdx: Number(paper), //여기에 선택한 편지지 id,
       tagIdx: tagIdlist, //여기에 선택한 태그리스트
+      image: getImg, //이미지 저장
     };
     //여기에 fetch 함수
-    
+
     //페이지 넘기기
     setTimeout(() => navigate("/home"), 1000);
   };
