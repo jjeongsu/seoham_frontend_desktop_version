@@ -7,7 +7,7 @@ import QuillToolbar from "../EditorToolBar";
 import QuillCustom from "./ReactQuill";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { letterState, pickedDate, tagState } from "../atom";
+import { letterState, pickedDate, tagState, userInfoState } from "../atom";
 import Calender from "./Caldender";
 import TagCreater from "./TagCreater";
 import ThemeChangeBtn from "./ThemeChangeBtn";
@@ -37,6 +37,7 @@ function Editor() {
   );
   const gettags = useRecoilValue(tagState);
   const getcontents = useRecoilValue(letterState);
+  const userInfo = useRecoilValue(userInfoState);
   const handleSenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSender(e.target.value);
   };
@@ -58,9 +59,24 @@ function Editor() {
       tagIdx: tagIdlist, //여기에 선택한 태그리스트
     };
     //여기에 fetch 함수
-    
+    console.log('최종 newPost 객체', newPost);
+    fetch("http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/posts/new", {
+      method: "POST",
+      headers: {
+        "X-ACCESS-TOKEN": userInfo.logintoken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newPost),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        if (res.isSuccess === true) {
+          console.log(res.result);
+        }
+      });
     //페이지 넘기기
-    setTimeout(() => navigate("/home"), 1000);
+    // setTimeout(() => navigate("/home"), 1000);
   };
   console.log("tagids", gettags);
   
