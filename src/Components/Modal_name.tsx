@@ -16,8 +16,14 @@ import {
   ModalinButton,
 } from "../styles/Modal";
 import { FlexDiv } from "../styles/MypageStyled";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { modalInModal, modalInModalMessage, userInfoState } from "../atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  Infostate,
+  UserInfo,
+  modalInModal,
+  modalInModalMessage,
+  userInfoState,
+} from "../atom";
 
 type Props = {
   modalClose: () => void;
@@ -47,6 +53,7 @@ function Modalname({ modalClose }: Props, { nickName }: Props) {
   const userInfo = useRecoilValue(userInfoState);
   const [nextModalOpen, setNextModalOpen] = useRecoilState(modalInModal);
   const [nextModalMsg, setNextModalMsg] = useRecoilState(modalInModalMessage);
+  const setUserInfo = useSetRecoilState<UserInfo>(Infostate);
   const nextModalClose = () => {
     setNextModalOpen(!nextModalOpen);
     modalClose();
@@ -96,8 +103,12 @@ function Modalname({ modalClose }: Props, { nickName }: Props) {
         );
         if (res.data.isSuccess) {
           setValue("idCheck", false);
+          setUserInfo((prev) => ({
+            ...prev,
+            name: watch("nickname"),
+          }));
           setNextModalOpen(!nextModalOpen);
-          setNextModalMsg(res.data.message);
+          setNextModalMsg("닉네임이 변경되었습니다");
         } else {
           setValue("idCheck", false);
           setNextModalOpen(!nextModalOpen);

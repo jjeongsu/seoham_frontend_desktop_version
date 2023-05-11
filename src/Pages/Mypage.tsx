@@ -29,24 +29,24 @@ function Mypage() {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState<boolean>(isLogAtom);
   const [userInfo, setUserInfo] = useRecoilState<UserInfo>(Infostate);
   const [userLogin, setUserLogin] = useRecoilState(userInfoState);
-  useEffect(() => {
-    async function getUserInfo() {
-      try {
-        const res = await axios.get(
-          "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/mypage/info",
-          { headers: { "x-access-token": userLogin.logintoken } }
-        );
-        setUserInfo({
-          name: res.data.result.nickname,
-          email: res.data.result.email,
-          letterNum: res.data.result.letter,
-        });
-      } catch (error) {
-        console.log(error);
-      }
+  async function getUserInfo() {
+    try {
+      const res = await axios.get(
+        "http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080/mypage/info",
+        { headers: { "x-access-token": userLogin.logintoken } }
+      );
+      setUserInfo({
+        name: res.data.result.nickname,
+        email: res.data.result.email,
+        letterNum: res.data.result.letter,
+      });
+    } catch (error) {
+      console.log(error);
     }
+  }
+  useEffect(() => {
     getUserInfo();
-  }, [userInfo, setUserInfo]);
+  }, [userInfo.name]);
 
   const Logout = (e: React.MouseEvent<HTMLButtonElement>) => {
     setUserLogin({
