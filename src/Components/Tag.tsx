@@ -16,6 +16,7 @@ function Tag({ tagName, tagIdx, tagColor }: ITag) {
   return (
     <TagBtn onClick={onClickTag} name={tagName} color={tagColor}>
       {tagName}
+      
     </TagBtn>
   );
 }

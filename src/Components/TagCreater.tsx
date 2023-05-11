@@ -9,13 +9,13 @@ const BASE_URL = `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:
 const TAGCOLOR = ["#C7AC98", "#E7C3B1", "#F7DECF", "#F1DCD6", "#FFEDDB"];
 function TagCreater() {
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-  const [tagList, setTagList] = useState<ITag[]>([]);
+  const [tagList, setTagList] = useState<ITag[]>([]);//기존 존재하는 태그 리스트
   const taglist: any[] = (() => {
     let newlist: any[] = [];
     tagList.map((t) => newlist.push(t.tagName));
     return newlist;
   })(); //기존 태그리스트에서 name만 모은 배열
-  const [tags, setTags] = useRecoilState(tagState); //atom
+  const [tags, setTags] = useRecoilState(tagState); //atom에 넣는 tags
   const [isOpenBox, setIsOpenBox] = useState<boolean>(false); //드롭박스 펼칠지 말지
   const [inputValue, setInputValue] = useState<string>(""); //인풋필드에 들어온 값
   const [matchedTagList, setMatchedTagList] = useState<string[]>(); //드롭박스로 펼쳐질 태그 리스트
@@ -45,9 +45,23 @@ function TagCreater() {
         return;
       }
     });
+    //기존 태그인지 확인
+    let isInServer = !(tagList.filter((t) => t.tagName === tag).length === 0 );
+    let crntTagIdx = 0;
+    console.log("서버에 있던 태그인가?", isInServer);
+    if(isInServer){
+       //기존 서버에 존재했던 태그의 경우 그냥 아이디 찾아서 넣기
+      crntTagIdx = findTagId(tag);
+      console.log('반환된 crntTagIdx', crntTagIdx);
+    }else{
+      //새로운 태그의 경우 태그 등록 하기
+      registerTag(tag);
+      refetch();
+      crntTagIdx = findTagId(tag);
+    }
     !isDubble &&
       setTags((oldTags) => [
-        { text: tag, id: tagList[Number(tag.slice(-1)) - 1].tagIdx },
+        { text: tag, id:  crntTagIdx},
         ...oldTags,
       ]);
     setInputValue("");
@@ -85,15 +99,14 @@ function TagCreater() {
       }
     }
   };
-  const { isLoading: taglistLoading, data: tagData } = useQuery(
+  const { isLoading: taglistLoading, data: tagData , refetch} = useQuery(
     ["allTags"],
     () => FetchTagList()
   );
   useEffect(() => {
     const TAGLIST: ITag[] = [];
     tagData?.data.result.map((item: ITag) => TAGLIST.push(item));
-
-    console.log(TAGLIST);
+    console.log("기존의 태그 리스트",TAGLIST);
     setTagList(TAGLIST);
   }, [tagData]);
   function FetchTagList() {
@@ -110,6 +123,30 @@ function TagCreater() {
   useEffect(() => {
     setTags([]);
   }, []);
+  //기존 태그 리스트중 name에 해당하는 Id를 반환하는 함수
+  const findTagId = (name: string) => {
+    const matchedTag = tagList.filter((tag) => tag.tagName === name) ;
+    return matchedTag[0].tagIdx;
+  }
+  //새로운 태그 등록
+  function registerTag (name: string)  {
+    const newTag = {
+      tagName: name,
+      tagColor: TAGCOLOR[Math.floor(Math.random() * 5)],
+    };
+    fetch(`${BASE_URL}/posts/tags/new`, {
+      method: "POST",
+      headers: {
+        "X-ACCESS-TOKEN": userInfo.logintoken,
+        "Content-Type": "application/json",
+      },
+      body : JSON.stringify(newTag),
+    })
+    .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+      });
+  }
   return (
     <>
       <div style={{ display: "block", padding: "1vw" }}>

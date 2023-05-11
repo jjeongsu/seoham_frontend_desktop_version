@@ -85,6 +85,7 @@ export const TagNameBar = styled.div<{ color: string }>`
     background: transparent;
     color: black;
   }
+  position: relative;
 `;
 export const NullTagDiv = styled.div`
   width: 100%;

@@ -120,6 +120,16 @@ function ViewLetterList() {
     })
   }
 
+  const handleDelete = (e:React.MouseEvent<HTMLButtonElement>) => {
+    fetch(`${BASE_URL}/posts/tags/delete/${tagID}`, {
+      method: "DELETE",
+      headers: {
+        "X-ACCESS-TOKEN": userInfo.logintoken,
+      },
+    })
+      .then((res) => res.json());
+  }
+
   return (
     <div style={{ width: "50%" }}>
       {/* 선택된 태그 출력 파트 */}
@@ -131,6 +141,7 @@ function ViewLetterList() {
         {!sortBy ? 
           <TagNameBar color={currentTag.tagColor}>
             <p># {currentTag.tagName}</p>
+            <DeleteBtn onClick={handleDelete}> 삭제 </DeleteBtn>
           </TagNameBar>
           :
           <p>{currentSender.sender}</p>
@@ -212,3 +223,16 @@ const ListDivScroll = styled.div`
   }
   //
 `;
+const DeleteBtn = styled.button`
+  height: inherit;
+  width : 50px;
+  position: absolute;
+  top: 0.6em;
+  right: 0.5em;
+  border: none;
+  background-color: transparent;
+  font-weight: 600;
+  &:hover {
+    color: #fd2020;
+  }
+`
