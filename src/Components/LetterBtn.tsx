@@ -7,6 +7,7 @@ interface propsType {
         date: string;
         sender: string;
         image: string|null;
+        content: string;
     };
 }
 
@@ -27,12 +28,7 @@ function LetterBtn({letter}:propsType){
                 <img src={letter.image} id={(letter.id).toString()}/> :
                 null
             }
-            {/* 
-                태그 별 편지 조회 리턴값에 content가 없어요. image만 있어요.
-                보낸이 별 편지 조회의 리턴값은 image에 content가 들어가고, content는 null값으로 표시되어 출력이 불가해요.
-            */}
-            {/* <div className="content" dangerouslySetInnerHTML={{__html:letter.content}}></div> */}
-            {/* <div className="content">api에 content가 전달되지 않아 대체텍스트로 적어봤습니다. 조금 더 길게 쓰면 어떻게 되는지 보려고 더 길게 쓰고 있어요.</div> */}
+            <div className="content" dangerouslySetInnerHTML={{__html:letter.content}}></div>
             <p className="date" id={(letter.id).toString()}>{letter.date}</p>
         </LetterBtnCss>
     )

@@ -1,4 +1,4 @@
-import { letterState } from "../atom";
+import { imgSrcState, letterState } from "../atom";
 import axios from "axios";
 import { useMemo, useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill";
@@ -18,13 +18,44 @@ function QuillCustom() {
   //   console.log(value);
   // };
   const [letter, setLetter] = useRecoilState(letterState);
+  const [imgSrc, setImgSrc] = useRecoilState(imgSrcState);
   const onClickSave = () => {
     setLetter(value);
     console.log(value);
+    setImgSrc(separateImg());
   };
   const onClickMenu = () => {
     navigate("/home");
   };
+  const separateImg = () => {
+        // 나올 수 있는 모든 태그로 쪼개고 조인하고 쪼개서 배열로 만들기(,는 태그 안에도 포함될 수 있어서 제일 안쓰일 것 같은 *로 구분자를 생성함)
+    let tmp_letter = value.split('</p>').join('*').split('</h1>').join('*').split('</h2>').join('*').split('</h3>').join('*').split('</h4>').join('*').split('</h5>').join('*').split('</h6>').join('*').split('</blockquote>').join('*').split('*')
+    let first_img = ""; //첫번째 img src를 담을 변수
+    
+    for (let idx = 0; idx < tmp_letter.length; idx++) {
+      if (tmp_letter[idx].includes('<img')) { //<img 태그를 포함하면 if문 통과
+        // console.log(tmp_letter[idx])
+        let newSrc = "";
+        for (let i = tmp_letter[idx].length - 1; i >= 0; i--){
+          newSrc += tmp_letter[idx][i];
+          if (newSrc.slice(-9 ,-1) === "=crs gmi") { 
+            // 역순으로 확인하기 때문에 마지막에 나오는 문자열을 비교할때도 역순으로
+            // console.log(newSrc);
+            break
+          }
+        }
+        // console.log(newSrc);
+        const result = newSrc.split('').reverse().join(''); //다시 역순으로 돌리기
+        if (result != ""){
+          first_img = result.slice(10).split('"')[0]; 
+            //<img src="~~~" 형식으로 저장돼서 slice로 앞에 "까지 자르고, split으로 " 기준으로 자르고 첫번째 원소 선택
+          break;
+        }
+      }
+    }
+    console.log("진짜 최종 img src:", first_img);
+    return first_img
+  } 
 
   //image URL로 변환하는 과정
   const ImageHandler = () => {

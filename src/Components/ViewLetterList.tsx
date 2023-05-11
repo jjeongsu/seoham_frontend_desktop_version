@@ -32,6 +32,7 @@ export interface ILetter {
   date: string;
   letterIdx: number;
   image: string|null;
+  content: string;
 }
 const BASE_URL = `http://ec2-13-209-41-214.ap-northeast-2.compute.amazonaws.com:8080`;
 function ViewLetterList() {
@@ -154,7 +155,7 @@ function ViewLetterList() {
           {/* 여기다가작성  LetterList로 접근*/}
           {LetterList.map((letter, index) => (
             <LetterBtn
-              letter={{id:letter.postIdx, date:letter.date, sender:letter.sender, image:letter.image}}                
+              letter={{id:letter.postIdx, date:letter.date, sender:letter.sender, image:letter.image, content:letter.content}}                
               key={letter.postIdx}               
             />
           ))}

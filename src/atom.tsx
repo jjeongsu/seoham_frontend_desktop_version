@@ -154,8 +154,14 @@ export const currentViewLetter = atom({
     tagName: [],
     tagColor: [],
     letterIdx: -1,
-    image: null,
-    content: null,
+    image: "",
+    content: "",
     paper: 0,
   },
+});
+
+// 이미지 주소 저장
+export const imgSrcState = atom({
+  key: "imgSrc",
+  default: "",
 });

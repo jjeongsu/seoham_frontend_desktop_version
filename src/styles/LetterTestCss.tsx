@@ -125,6 +125,12 @@ export const ContentDiv = styled.div<{ clickprops: boolean }>`
     }
   }
 
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+  }
+
   //전역 스타일링 무시
   h1, h2, h3, h4, h5, h6, blockquote {
     background: transparent;
