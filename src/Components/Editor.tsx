@@ -7,7 +7,13 @@ import QuillToolbar from "../EditorToolBar";
 import QuillCustom from "./ReactQuill";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { imgSrcState, letterState, pickedDate, tagState, userInfoState } from "../atom";
+import {
+  imgSrcState,
+  letterState,
+  pickedDate,
+  tagState,
+  userInfoState,
+} from "../atom";
 import Calender from "./Caldender";
 import TagCreater from "./TagCreater";
 import ThemeChangeBtn from "./ThemeChangeBtn";
@@ -67,9 +73,9 @@ function Editor() {
         "X-ACCESS-TOKEN": userInfo.logintoken,
         "Content-Type": "application/json",
       },
-      body : JSON.stringify(newPost),
+      body: JSON.stringify(newPost),
     })
-    .then((res) => res.json())
+      .then((res) => res.json())
       .then((res) => {
         console.log(res.result);
       });
@@ -77,28 +83,34 @@ function Editor() {
     setTimeout(() => navigate("/home"), 1000);
   };
   console.log("tagids", gettags);
-  
+
   //getdate.slice(0,4)
-  console.log("getdate",getdate.trim());
-  console.log(getdate.slice(0,4));
-  console.log("getdate",getdate);
-  console.log(getdate.slice(8,3));
+  console.log("getdate", getdate.trim());
+  console.log(getdate.slice(0, 4));
+  console.log("getdate", getdate);
+  console.log(getdate.slice(8, 3));
 
   //편지지 선택 모달 관련
   const [modal, setModal] = useState(false);
   const [paper, setPaper] = useState(0); //register 함수 만들때 paper 변수를 사용하면 됩니당 (편지지 번호는 1부터 시작)
-  const modalClose = () => { //modal on-off
-    setModal((modalOpen) => !modalOpen)
-  }
+  const modalClose = () => {
+    //modal on-off
+    setModal((modalOpen) => !modalOpen);
+  };
   const modalRef = useRef<HTMLDivElement>(null); //해당 DOM의 정보 넘기기
-  const modalOutSideClick = (e:any) => { //해당 DOM 정보를 통해 위치 비교
-    if(modalRef.current === e.target) {
+  const modalOutSideClick = (e: any) => {
+    //해당 DOM 정보를 통해 위치 비교
+    if (modalRef.current === e.target) {
       setModal((current) => !current);
     }
-  }
-  const onClickPaper = () => { //처음에 버튼(편지지 선택하기) 누를 때 모달창 띄우기
+  };
+  const onClickPaper = () => {
+    //처음에 버튼(편지지 선택하기) 누를 때 모달창 띄우기
     modalClose();
-  }
+  };
+  const onClickMenu = () => {
+    navigate("/home");
+  };
 
   return (
     <div
@@ -110,16 +122,29 @@ function Editor() {
         marginTop: "10%",
       }}
     >
-      <Header>
+      <HeaderDiv>
         {" "}
-        편지 작성하기
-        <SaveBtn onClick={register}>
-          <BtnImg
-            src={isSaveClick ? "../savebtn_on.png" : "../savebtn_off.png"}
-            title="저장 버튼" // 버튼 호버시 설명글 나오게 하는건데 필요할까 싶어서요..
-          />
-        </SaveBtn>
-      </Header>
+        <ThemeChangeBtn />
+        <Header>
+          편지 작성하기
+          <SaveBtn onClick={register}>
+            <BtnImg
+              src={isSaveClick ? "../savebtn_on.png" : "../savebtn_off.png"}
+              title="저장 버튼"
+            />
+          </SaveBtn>
+        </Header>
+        <button
+          onClick={onClickMenu}
+          style={{
+            backgroundColor: "transparent",
+            border: "transparent",
+            marginBottom: "3vh",
+          }}
+        >
+          <RightButton src="/img/right-arrow.png" alt="페이지 이동" />{" "}
+        </button>
+      </HeaderDiv>
       <Letter>
         <QuillContainer>
           <QuillToolbar />
@@ -142,24 +167,36 @@ function Editor() {
           <TagCreater />
           <Calender />
           <SelectPaperCss onClick={onClickPaper}>
-            {
-              paper === 0 ?
-              "편지지 선택하기"
-              :
-              <p>{paper}번 편지지 선택</p>
-            }
+            {paper === 0 ? "편지지 선택하기" : <p>{paper}번 편지지 선택</p>}
           </SelectPaperCss>
-          {
-            modal && 
-            <SelectPaper modalRef={modalRef} modalClose={modalClose} modalOutSideClick={modalOutSideClick} setPaper={setPaper}/>
-          }
+          {modal && (
+            <SelectPaper
+              modalRef={modalRef}
+              modalClose={modalClose}
+              modalOutSideClick={modalOutSideClick}
+              setPaper={setPaper}
+            />
+          )}
         </div>
       </Letter>
-      <ThemeChangeBtn />
     </div>
   );
 }
 export default Editor;
+
+const HeaderDiv = styled.div`
+  display: flex;
+  margin-bottom: 5vh;
+`;
+
+const RightButton = styled.img`
+  width: 16px;
+  color: black;
+  border: 2px solid;
+  border-color: transparent;
+  position: absolute;
+  left: 90%;
+`;
 
 const Header = styled.h1`
   display: block;
@@ -167,8 +204,8 @@ const Header = styled.h1`
   font-weight: 700;
   color: ${(props) => props.theme.textColor};
   text-align: center;
-  margin-bottom: 5vh;
 `;
+
 const SaveBtn = styled.button`
   border: none;
   width: 15px;
@@ -207,18 +244,19 @@ const SelectPaperCss = styled.button`
   width: 200px;
   height: 2.5em;
   padding: 7px 15px;
-  border: 1px solid #EF9F9F;
+  border: 1px solid #ef9f9f;
   border-radius: 20px;
-  background-color: #EF9F9F;
+  background-color: #ef9f9f;
   color: ${(props) => props.theme.textColor};
   margin-top: 10px;
   &:focus {
-    outline:none;
+    outline: none;
   }
   &:hover {
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
-  p{
+  p {
     background: transparent;
   }
 `;
