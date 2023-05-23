@@ -122,18 +122,18 @@ function Editor() {
         marginTop: "10%",
       }}
     >
-      <HeaderDiv>
-        {" "}
-        <ThemeChangeBtn />
+
+        
         <Header>
-          편지 작성하기
+          <ThemeChangeBtn />
+          <h1>편지 작성하기
           <SaveBtn onClick={register}>
             <BtnImg
               src={isSaveClick ? "../savebtn_on.png" : "../savebtn_off.png"}
               title="저장 버튼"
             />
           </SaveBtn>
-        </Header>
+          </h1>
         <button
           onClick={onClickMenu}
           style={{
@@ -141,10 +141,10 @@ function Editor() {
             border: "transparent",
             marginBottom: "3vh",
           }}
-        >
+          >
           <RightButton src="/img/right-arrow.png" alt="페이지 이동" />{" "}
         </button>
-      </HeaderDiv>
+        </Header>
       <Letter>
         <QuillContainer>
           <QuillToolbar />
@@ -199,11 +199,15 @@ const RightButton = styled.img`
 `;
 
 const Header = styled.h1`
-  display: block;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   font-size: larger;
   font-weight: 700;
   color: ${(props) => props.theme.textColor};
   text-align: center;
+  width: 90vw;
+  margin: 0px 20vw 5vw 30vw ;
 `;
 
 const SaveBtn = styled.button`
